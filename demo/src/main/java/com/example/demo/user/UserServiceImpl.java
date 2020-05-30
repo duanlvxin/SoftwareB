@@ -15,7 +15,8 @@ public class UserServiceImpl implements UserService {
     PatientMapper patientMapper;
 
     @Override
-    public String register(String username, String password, String mobile, Date birthday, String address, String patient_name) {
+    public String register(String username, String password, String mobile, Date birthday, String address, String patient_name,
+                           Boolean patient_gender) {
         Patient patient = new Patient();
         patient.setPatientId((int)System.currentTimeMillis());
         patient.setPatientUser(username);
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService {
         patient.setBirthday(birthday);
         patient.setAddress(address);
         patient.setPatientName(patient_name);
+        patient.setPatientGender(patient_gender);
 
         try{
             if(patientMapper.selectByUsername(username)==null){
@@ -44,7 +46,7 @@ public class UserServiceImpl implements UserService {
     public String login(HttpServletRequest request) {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        String token = request.getParameter("token");
+        String token = request.getHeader("Authorization");
         Patient result = patientMapper.selectByUsername(username);
         if(result==null){
             return "{\"code\":401,\"msg\":\"登录失败,用户不存在!\",\"data\":[]}";

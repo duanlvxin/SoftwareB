@@ -17,6 +17,8 @@ public class Patient {
 
     private String patientName;
 
+    private Boolean patientGender;
+
     public Integer getPatientId() {
         return patientId;
     }
@@ -71,5 +73,13 @@ public class Patient {
 
     public void setPatientName(String patientName) {
         this.patientName = patientName == null ? null : patientName.trim();
+    }
+
+    public Boolean getPatientGender() {
+        return patientGender;
+    }
+
+    public void setPatientGender(Boolean patientGender) {
+        this.patientGender = patientGender;
     }
 }

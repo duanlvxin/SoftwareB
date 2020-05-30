@@ -29,8 +29,10 @@ public class UserController {
         Date birthday = Date.valueOf(request.getParameter("birthday"));
         String address = request.getParameter("address");
         String patient_name = request.getParameter("patient_name");
+        Boolean patient_gender = Boolean.parseBoolean(request.getParameter("patient_gender"));
 
-        return JSONObject.parseObject(userService.register(username,password,mobile,birthday,address,patient_name));
+        return JSONObject.parseObject(userService.register(username,password,mobile,birthday,address,patient_name,
+                patient_gender));
     }
 
     @RequestMapping("api/patient/login")
