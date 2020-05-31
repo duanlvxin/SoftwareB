@@ -32,12 +32,12 @@ public class TokenTools {
     /**
      * 判断请求参数中的token是否和session中的一致
      * @param request
-     * @param TokenClientkey
+     * @param tokenClientkey
      * @param tokenServerkey
      * @return
      */
-    public static boolean judgeTokenIsEqual(HttpServletRequest request,String TokenClientkey, String tokenServerkey){
-        String token_client = TokenTools.createToken(request,TokenClientkey);
+    public static boolean judgeTokenIsEqual(HttpServletRequest request,String tokenClientkey, String tokenServerkey){
+        String token_client = request.getHeader(tokenClientkey);
         String token_server = (String)request.getSession().getAttribute(tokenServerkey);
         if(StringUtils.isEmpty(token_server)){
             return false;

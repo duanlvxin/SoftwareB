@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
             return "{\"code\":201,\"msg\":\"登录成功\",\"data\":{\"token\":" + "\""+create_token+"\""+ "}}";
         }
         else{
-            if(!TokenTools.judgeTokenIsEqual(request,username,username)){
+            if(!TokenTools.judgeTokenIsEqual(request,"Authorization",username)){
                 return "{\"code\":403,\"msg\":\"登录失败,token不正确!\",\"data\":[]}";
             }
             return "{\"code\":200,\"msg\":\"登录成功\",\"data\":[]}";
