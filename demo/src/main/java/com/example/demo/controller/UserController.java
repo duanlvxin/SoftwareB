@@ -38,7 +38,7 @@ public class UserController {
 
     @RequestMapping(value = "api/patient/login",method = RequestMethod.POST)
     public JSONObject login(HttpServletRequest request) {
-        return JSONObject.parseObject(userService.login(request));
+        return JSONObject.parseObject(userService.patient_login(request));
     }
 
     @RequestMapping("api/docter/login")
