@@ -36,7 +36,12 @@ public class UserController {
     }
 
     @RequestMapping("api/patient/login")
-    public JSONObject login(HttpServletRequest request){
-        return JSONObject.parseObject(userService.login(request));
+    public JSONObject patient_login(HttpServletRequest request){
+        return JSONObject.parseObject(userService.patient_login(request));
+    }
+
+    @RequestMapping("api/patient/login")
+    public JSONObject doctor_login(HttpServletRequest request){
+        return JSONObject.parseObject(userService.doctor_login(request));
     }
 }
