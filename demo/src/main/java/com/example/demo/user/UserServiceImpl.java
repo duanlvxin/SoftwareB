@@ -4,12 +4,15 @@ import com.example.demo.mapper.DoctorMapper;
 import com.example.demo.model.Doctor;
 import com.example.demo.mapper.PatientMapper;
 import com.example.demo.model.Patient;
+import common.utils.age.computeAgeHelper;
 import common.utils.token.TokenTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.Date;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 @Service
 public class UserServiceImpl implements UserService {
