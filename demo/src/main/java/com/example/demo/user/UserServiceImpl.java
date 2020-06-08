@@ -24,7 +24,8 @@ public class UserServiceImpl implements UserService {
     public String register(String username, String password, String mobile, Date birthday, String address, String patient_name,
                            Boolean patient_gender) {
         Patient patient = new Patient();
-        patient.setPatientId((int)System.currentTimeMillis());
+        int patient_id = (int)System.currentTimeMillis();
+        patient.setPatientId(patient_id);
         patient.setPatientUser(username);
         patient.setPatientPassword(password);
         patient.setPatientMobile(mobile);
@@ -37,14 +38,34 @@ public class UserServiceImpl implements UserService {
             if(patientMapper.selectByUsername(username)==null){
                 System.out.println(patientMapper.selectByUsername(username));
                 patientMapper.insert(patient);
-                return "{\"code\":200,\"msg\":\"注册成功\",\"data\":[]}";
+                return "{\n" +
+                        "    \"data\": {\n" +
+                        "        \"patient_id\":"+ patient_id +"\n" +
+                        "    },\n" +
+                        "    \"meta\": {\n" +
+                        "        \"msg\": \"注册成功\",\n" +
+                        "        \"status\": 201\n" +
+                        "    }\n" +
+                        "}";
             }
             else{
-                return "{\"code\":300,\"msg\":\"该用户已经注册过，不能重复注册!\",\"data\":[]}";
+                return "{\n" +
+                        "    \"data\": [],\n" +
+                        "    \"meta\": {\n" +
+                        "        \"msg\": \"用户已注册\",\n" +
+                        "        \"status\": 205\n" +
+                        "    }\n" +
+                        "}";
             }
         }
         catch (Exception e){
-            return "{\"code\":400,\"msg\":\"注册失败\",\"data\":[]}";
+            return "{\n" +
+                    "    \"data\": [],\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"注册失败\",\n" +
+                    "        \"status\": 500\n" +
+                    "    }\n" +
+                    "}";
         }
     }
 
@@ -55,25 +76,81 @@ public class UserServiceImpl implements UserService {
         String token = request.getHeader("Authorization");
         Patient result = patientMapper.selectByUsername(username);
         if(result==null){
-            return "{\"code\":401,\"msg\":\"登录失败,用户不存在!\",\"data\":[]}";
+            return "{\n" +
+                    "    \"data\": [],\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"登录失败,用户不存在\",\n" +
+                    "        \"status\": 403\n" +
+                    "    }\n" +
+                    "}";
         }
         String correct_password = result.getPatientPassword();
         if(!password.equals(correct_password)){
-            return "{\"code\":402,\"msg\":\"登录失败,用户名或密码错误!\",\"data\":[]}";
+            return "{\n" +
+                    "    \"data\": [],\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"登录失败，用户名或密码错误\",\n" +
+                    "        \"status\": 403\n" +
+                    "    }\n" +
+                    "}";
         }
 
         String create_token;
+        computeAgeHelper ageHelper = new computeAgeHelper();
+        int age=0;
+        String birthday = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(result.getBirthday());
+        try{
+            age = ageHelper.computeAge(result.getBirthday());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         if(token==null){
             //生成token
             create_token = TokenTools.createToken(request,username);
             request.getSession().setAttribute(username, create_token);
-            return "{\"code\":201,\"msg\":\"登录成功\",\"data\":{\"token\":" + "\""+create_token+"\""+ "}}";
+            return "{\n" +
+                    "    \"data\": {\n" +
+                    "        \"patient_id\": "+ result.getPatientId() +",\n" +
+                    "        \"patient_name\": \""+ result.getPatientName() +"\",\n" +
+                    "        \"patient_user\": \""+ result.getPatientUser()+"\",\n" +
+                    "        \"patient_mobile\": \""+ result.getPatientMobile() +"\",\n" +
+                    "        \"birthday\": \"" + birthday +"\",\n" +
+                    "        \"patient_age\": " + age + ",\n" +
+                    "        \"address\": \""+ result.getAddress() +"\",\n" +
+                    "        \"token\": \""+ create_token+"\"\n" +
+                    "    },\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"登录成功\",\n" +
+                    "        \"status\": 200\n" +
+                    "    }\n" +
+                    "}";
         }
         else{
             if(!TokenTools.judgeTokenIsEqual(request,"Authorization",username)){
-                return "{\"code\":403,\"msg\":\"登录失败,token不正确!\",\"data\":[]}";
+                return "{\n" +
+                        "    \"data\": [],\n" +
+                        "    \"meta\": {\n" +
+                        "        \"msg\": \"登录失败，token不正确\",\n" +
+                        "        \"status\": 403\n" +
+                        "    }\n" +
+                        "}";
             }
-            return "{\"code\":200,\"msg\":\"登录成功\",\"data\":[]}";
+            return "{\n" +
+                    "    \"data\": {\n" +
+                    "        \"patient_id\": "+ result.getPatientId() +",\n" +
+                    "        \"patient_name\": \""+ result.getPatientName() +"\",\n" +
+                    "        \"patient_user\": \""+ result.getPatientUser()+"\",\n" +
+                    "        \"patient_mobile\": \""+ result.getPatientMobile() +"\",\n" +
+                    "        \"birthday\": \"" + birthday +"\",\n" +
+                    "        \"patient_age\": " + age + ",\n" +
+                    "        \"address\": \""+ result.getAddress() +"\",\n" +
+                    "        \"token\": \""+ token+"\"\n" +
+                    "    },\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"登录成功\",\n" +
+                    "        \"status\": 200\n" +
+                    "    }\n" +
+                    "}";
         }
     }
 
@@ -84,11 +161,23 @@ public class UserServiceImpl implements UserService {
         String token = request.getHeader("Authorization");
         Doctor result = doctorMapper.selectByUsername(username);
         if(result==null){
-            return "{\"code\":401,\"msg\":\"登录失败,用户不存在!\",\"data\":[]}";
+            return "{\n" +
+                    "    \"data\": [],\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"登录失败,用户不存在\",\n" +
+                    "        \"status\": 403\n" +
+                    "    }\n" +
+                    "}";
         }
         String correct_password = result.getDoctorPassword();
         if(!password.equals(correct_password)){
-            return "{\"code\":402,\"msg\":\"登录失败,用户名或密码错误!\",\"data\":[]}";
+            return "{\n" +
+                    "    \"data\": [],\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"登录失败，用户名或密码错误\",\n" +
+                    "        \"status\": 403\n" +
+                    "    }\n" +
+                    "}";
         }
 
         String create_token;
@@ -96,13 +185,53 @@ public class UserServiceImpl implements UserService {
             //生成token
             create_token = TokenTools.createToken(request,username);
             request.getSession().setAttribute(username, create_token);
-            return "{\"code\":201,\"msg\":\"登录成功\",\"data\":{\"token\":" + "\""+create_token+"\""+ "}}";
+            return "{\n" +
+                    "    \"data\": {\n" +
+                    "        \"doctor_id\": "+ result.getDoctorId() +",\n" +
+                    "        \"doctor_name\": \"" + result.getDoctorName() + "\",\n" +
+                    "        \"doctor_user\": \"xxxxx\",\n" +
+                    "        \"doctor_intro\": \"xxxxxxxxxxxxxxxxxxxxxxx\",\n" +
+                    "        \"doctor_email\": \"xxxxx@qq.com\",\n" +
+                    "        \"doctor_mobile\": \"13899999999\",\n" +
+                    "        \"doctor_tel\": \"0755-22222222\",\n" +
+                    "        \"doctor_pho\": \"\",\n" +
+                    "        \"department_name\": \"呼吸科\",\n" +
+                    "        \"token\": \"xxxxxxxx\",\n" +
+                    "    },\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"登录成功\",\n" +
+                    "        \"status\": 200\n" +
+                    "    }\n" +
+                    "}";
         }
         else{
             if(!TokenTools.judgeTokenIsEqual(request,"Authorization",username)){
-                return "{\"code\":403,\"msg\":\"登录失败,token不正确!\",\"data\":[]}";
+                return "{\n" +
+                        "    \"data\": [],\n" +
+                        "    \"meta\": {\n" +
+                        "        \"msg\": \"登录失败，token不正确\",\n" +
+                        "        \"status\": 403\n" +
+                        "    }\n" +
+                        "}";
             }
-            return "{\"code\":200,\"msg\":\"登录成功\",\"data\":[]}";
+            return "{\n" +
+                    "    \"data\": {\n" +
+                    "        \"doctor_id\": 20,\n" +
+                    "        \"doctor_name\": \"xxxx\",\n" +
+                    "        \"doctor_user\": \"xxxxx\",\n" +
+                    "        \"doctor_intro\": \"xxxxxxxxxxxxxxxxxxxxxxx\",\n" +
+                    "        \"doctor_email\": \"xxxxx@qq.com\",\n" +
+                    "        \"doctor_mobile\": \"13899999999\",\n" +
+                    "        \"doctor_tel\": \"0755-22222222\",\n" +
+                    "        \"doctor_pho\": \"\",\n" +
+                    "        \"department_name\": \"呼吸科\",\n" +
+                    "        \"token\": \"xxxxxxxx\",\n" +
+                    "    },\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"登录成功\",\n" +
+                    "        \"status\": 200\n" +
+                    "    }\n" +
+                    "}";
         }
     }
 }
