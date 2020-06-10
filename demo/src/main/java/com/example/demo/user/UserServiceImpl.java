@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.Date;
+import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
@@ -97,10 +97,14 @@ public class UserServiceImpl implements UserService {
 
         String create_token;
         computeAgeHelper ageHelper = new computeAgeHelper();
-        int age=0;
-        String birthday = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(result.getBirthday());
+        int age = 0;
+        String formatBirthday = "";
+        Date birthday = result.getBirthday();
         try{
-            age = ageHelper.computeAge(result.getBirthday());
+            Date format=new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.US).parse(birthday.toString());
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+            formatBirthday = sdf.format(format);
+            age = ageHelper.computeAge(birthday);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -114,7 +118,7 @@ public class UserServiceImpl implements UserService {
                     "        \"patient_name\": \""+ result.getPatientName() +"\",\n" +
                     "        \"patient_user\": \""+ result.getPatientUser()+"\",\n" +
                     "        \"patient_mobile\": \""+ result.getPatientMobile() +"\",\n" +
-                    "        \"birthday\": \"" + birthday +"\",\n" +
+                    "        \"birthday\": \"" + formatBirthday +"\",\n" +
                     "        \"patient_age\": " + age + ",\n" +
                     "        \"address\": \""+ result.getAddress() +"\",\n" +
                     "        \"token\": \""+ create_token+"\"\n" +
@@ -141,7 +145,7 @@ public class UserServiceImpl implements UserService {
                     "        \"patient_name\": \""+ result.getPatientName() +"\",\n" +
                     "        \"patient_user\": \""+ result.getPatientUser()+"\",\n" +
                     "        \"patient_mobile\": \""+ result.getPatientMobile() +"\",\n" +
-                    "        \"birthday\": \"" + birthday +"\",\n" +
+                    "        \"birthday\": \"" + formatBirthday +"\",\n" +
                     "        \"patient_age\": " + age + ",\n" +
                     "        \"address\": \""+ result.getAddress() +"\",\n" +
                     "        \"token\": \""+ token+"\"\n" +
@@ -189,14 +193,14 @@ public class UserServiceImpl implements UserService {
                     "    \"data\": {\n" +
                     "        \"doctor_id\": "+ result.getDoctorId() +",\n" +
                     "        \"doctor_name\": \"" + result.getDoctorName() + "\",\n" +
-                    "        \"doctor_user\": \"xxxxx\",\n" +
-                    "        \"doctor_intro\": \"xxxxxxxxxxxxxxxxxxxxxxx\",\n" +
-                    "        \"doctor_email\": \"xxxxx@qq.com\",\n" +
-                    "        \"doctor_mobile\": \"13899999999\",\n" +
-                    "        \"doctor_tel\": \"0755-22222222\",\n" +
-                    "        \"doctor_pho\": \"\",\n" +
-                    "        \"department_name\": \"呼吸科\",\n" +
-                    "        \"token\": \"xxxxxxxx\",\n" +
+                    "        \"doctor_user\": \"" + result.getDoctorUser() + "\",\n" +
+                    "        \"doctor_intro\": \""+ result.getDoctorIntro() +"\",\n" +
+                    "        \"doctor_email\": \"" + result.getDoctorEmail() + "\",\n" +
+                    "        \"doctor_mobile\": \"" + result.getDoctorMobile() + "\",\n" +
+                    "        \"doctor_tel\": \"" + result.getDoctorTel() + "\",\n" +
+                    "        \"doctor_pho\": \"" + new String(result.getDoctorPho()) + "\",\n" +
+                    "        \"department_name\": \""+ result.getDepartmentId() +"\",\n" +
+                    "        \"token\": \"" + create_token + "\",\n" +
                     "    },\n" +
                     "    \"meta\": {\n" +
                     "        \"msg\": \"登录成功\",\n" +
@@ -216,16 +220,16 @@ public class UserServiceImpl implements UserService {
             }
             return "{\n" +
                     "    \"data\": {\n" +
-                    "        \"doctor_id\": 20,\n" +
-                    "        \"doctor_name\": \"xxxx\",\n" +
-                    "        \"doctor_user\": \"xxxxx\",\n" +
-                    "        \"doctor_intro\": \"xxxxxxxxxxxxxxxxxxxxxxx\",\n" +
-                    "        \"doctor_email\": \"xxxxx@qq.com\",\n" +
-                    "        \"doctor_mobile\": \"13899999999\",\n" +
-                    "        \"doctor_tel\": \"0755-22222222\",\n" +
-                    "        \"doctor_pho\": \"\",\n" +
-                    "        \"department_name\": \"呼吸科\",\n" +
-                    "        \"token\": \"xxxxxxxx\",\n" +
+                    "        \"doctor_id\": "+ result.getDoctorId() +",\n" +
+                    "        \"doctor_name\": \"" + result.getDoctorName() + "\",\n" +
+                    "        \"doctor_user\": \"" + result.getDoctorUser() + "\",\n" +
+                    "        \"doctor_intro\": \""+ result.getDoctorIntro() +"\",\n" +
+                    "        \"doctor_email\": \"" + result.getDoctorEmail() + "\",\n" +
+                    "        \"doctor_mobile\": \"" + result.getDoctorMobile() + "\",\n" +
+                    "        \"doctor_tel\": \"" + result.getDoctorTel() + "\",\n" +
+                    "        \"doctor_pho\": \"" + new String(result.getDoctorPho()) + "\",\n" +
+                    "        \"department_name\": \""+ result.getDepartmentId() +"\",\n" +
+                    "        \"token\": \"" + token + "\",\n" +
                     "    },\n" +
                     "    \"meta\": {\n" +
                     "        \"msg\": \"登录成功\",\n" +
