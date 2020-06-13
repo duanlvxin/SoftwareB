@@ -1,9 +1,9 @@
 package com.example.demo.model;
 
 public class Doctor {
-    private Integer doctorId;
+    private Long doctorId;
 
-    private Integer departmentId;
+    private Long departmentId;
 
     private String doctorName;
 
@@ -23,19 +23,19 @@ public class Doctor {
 
     private byte[] doctorPho;
 
-    public Integer getDoctorId() {
+    public Long getDoctorId() {
         return doctorId;
     }
 
-    public void setDoctorId(Integer doctorId) {
+    public void setDoctorId(Long doctorId) {
         this.doctorId = doctorId;
     }
 
-    public Integer getDepartmentId() {
+    public Long getDepartmentId() {
         return departmentId;
     }
 
-    public void setDepartmentId(Integer departmentId) {
+    public void setDepartmentId(Long departmentId) {
         this.departmentId = departmentId;
     }
 

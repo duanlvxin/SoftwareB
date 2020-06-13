@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.crypto.Data;
+import java.util.Arrays;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -21,6 +22,7 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
     @Autowired
     PatientMapper patientMapper;
+    @Autowired
     DoctorMapper doctorMapper;
 
     @Override
@@ -143,7 +145,12 @@ public class UserServiceImpl implements UserService {
     public String doctor_login(Map<String, String> params) {
         String username = params.get("username");
         String password = params.get("password");
-        Doctor result = doctorMapper.selectByUsername(username);
+        Doctor result = null;
+        try{
+            result = doctorMapper.selectByUsername(username);
+        }catch (Exception e){
+            System.out.println(e);
+        }
         if(result==null){
             return "{\n" +
                     "    \"data\": [],\n" +
@@ -167,6 +174,7 @@ public class UserServiceImpl implements UserService {
         String create_token;
         //生成token
         create_token = TokenTools.createToken(username);
+        System.out.println(Arrays.toString(result.getDoctorPho()));
         return "{\n" +
                 "    \"data\": {\n" +
                 "        \"doctor_id\": "+ result.getDoctorId() +",\n" +
@@ -176,7 +184,7 @@ public class UserServiceImpl implements UserService {
                 "        \"doctor_email\": \"" + result.getDoctorEmail() + "\",\n" +
                 "        \"doctor_mobile\": \"" + result.getDoctorMobile() + "\",\n" +
                 "        \"doctor_tel\": \"" + result.getDoctorTel() + "\",\n" +
-                "        \"doctor_pho\": \"" + new String(result.getDoctorPho()) + "\",\n" +
+                "        \"doctor_pho\": \"" + Arrays.toString(result.getDoctorPho()) + "\",\n" +
                 "        \"department_name\": \""+ result.getDepartmentId() +"\",\n" +
                 "        \"token\": \"" + create_token + "\",\n" +
                 "    },\n" +

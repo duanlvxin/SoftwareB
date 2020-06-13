@@ -1,170 +1,162 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.example.demo.mapper.DoctorMapper" >
-  <resultMap id="BaseResultMap" type="com.example.demo.model.Doctor" >
-    <id column="doctor_id" property="doctorId" jdbcType="INTEGER" />
-    <result column="department_id" property="departmentId" jdbcType="INTEGER" />
-    <result column="doctor_name" property="doctorName" jdbcType="CHAR" />
-    <result column="doctor_user" property="doctorUser" jdbcType="CHAR" />
-    <result column="doctor_password" property="doctorPassword" jdbcType="CHAR" />
-    <result column="doctor_intro" property="doctorIntro" jdbcType="CHAR" />
-    <result column="doctor_email" property="doctorEmail" jdbcType="CHAR" />
-    <result column="doctor_mobile" property="doctorMobile" jdbcType="CHAR" />
-    <result column="doctor_tel" property="doctorTel" jdbcType="CHAR" />
-    <result column="doctor_gender" property="doctorGender" jdbcType="BIT" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.DoctorMapper">
+  <resultMap id="BaseResultMap" type="com.example.demo.model.Doctor">
+    <id column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="department_id" jdbcType="BIGINT" property="departmentId" />
+    <result column="doctor_name" jdbcType="CHAR" property="doctorName" />
+    <result column="doctor_user" jdbcType="CHAR" property="doctorUser" />
+    <result column="doctor_password" jdbcType="CHAR" property="doctorPassword" />
+    <result column="doctor_intro" jdbcType="CHAR" property="doctorIntro" />
+    <result column="doctor_email" jdbcType="CHAR" property="doctorEmail" />
+    <result column="doctor_mobile" jdbcType="CHAR" property="doctorMobile" />
+    <result column="doctor_tel" jdbcType="CHAR" property="doctorTel" />
+    <result column="doctor_gender" jdbcType="BIT" property="doctorGender" />
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="com.example.demo.model.Doctor" extends="BaseResultMap" >
-    <result column="doctor_pho" property="doctorPho" jdbcType="LONGVARBINARY" />
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.example.demo.model.Doctor">
+    <result column="doctor_pho" jdbcType="LONGVARBINARY" property="doctorPho" />
   </resultMap>
-  <sql id="Base_Column_List" >
+  <sql id="Base_Column_List">
     doctor_id, department_id, doctor_name, doctor_user, doctor_password, doctor_intro, 
     doctor_email, doctor_mobile, doctor_tel, doctor_gender
   </sql>
-  <sql id="Blob_Column_List" >
+  <sql id="Blob_Column_List">
     doctor_pho
   </sql>
-  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
     select 
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
     from doctor
-    where doctor_id = #{doctorId,jdbcType=INTEGER}
+    where doctor_id = #{doctorId,jdbcType=BIGINT}
   </select>
-  <select id="selectByUsername" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
-    select
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from doctor
-    where doctor_user = #{doctorUser,jdbcType=CHAR}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from doctor
-    where doctor_id = #{doctorId,jdbcType=INTEGER}
+    where doctor_id = #{doctorId,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.example.demo.model.Doctor" >
+  <insert id="insert" parameterType="com.example.demo.model.Doctor">
     insert into doctor (doctor_id, department_id, doctor_name, 
       doctor_user, doctor_password, doctor_intro, 
       doctor_email, doctor_mobile, doctor_tel, 
       doctor_gender, doctor_pho)
-    values (#{doctorId,jdbcType=INTEGER}, #{departmentId,jdbcType=INTEGER}, #{doctorName,jdbcType=CHAR}, 
+    values (#{doctorId,jdbcType=BIGINT}, #{departmentId,jdbcType=BIGINT}, #{doctorName,jdbcType=CHAR}, 
       #{doctorUser,jdbcType=CHAR}, #{doctorPassword,jdbcType=CHAR}, #{doctorIntro,jdbcType=CHAR}, 
       #{doctorEmail,jdbcType=CHAR}, #{doctorMobile,jdbcType=CHAR}, #{doctorTel,jdbcType=CHAR}, 
       #{doctorGender,jdbcType=BIT}, #{doctorPho,jdbcType=LONGVARBINARY})
   </insert>
-  <insert id="insertSelective" parameterType="com.example.demo.model.Doctor" >
+  <insert id="insertSelective" parameterType="com.example.demo.model.Doctor">
     insert into doctor
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="doctorId != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="doctorId != null">
         doctor_id,
       </if>
-      <if test="departmentId != null" >
+      <if test="departmentId != null">
         department_id,
       </if>
-      <if test="doctorName != null" >
+      <if test="doctorName != null">
         doctor_name,
       </if>
-      <if test="doctorUser != null" >
+      <if test="doctorUser != null">
         doctor_user,
       </if>
-      <if test="doctorPassword != null" >
+      <if test="doctorPassword != null">
         doctor_password,
       </if>
-      <if test="doctorIntro != null" >
+      <if test="doctorIntro != null">
         doctor_intro,
       </if>
-      <if test="doctorEmail != null" >
+      <if test="doctorEmail != null">
         doctor_email,
       </if>
-      <if test="doctorMobile != null" >
+      <if test="doctorMobile != null">
         doctor_mobile,
       </if>
-      <if test="doctorTel != null" >
+      <if test="doctorTel != null">
         doctor_tel,
       </if>
-      <if test="doctorGender != null" >
+      <if test="doctorGender != null">
         doctor_gender,
       </if>
-      <if test="doctorPho != null" >
+      <if test="doctorPho != null">
         doctor_pho,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="doctorId != null" >
-        #{doctorId,jdbcType=INTEGER},
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="doctorId != null">
+        #{doctorId,jdbcType=BIGINT},
       </if>
-      <if test="departmentId != null" >
-        #{departmentId,jdbcType=INTEGER},
+      <if test="departmentId != null">
+        #{departmentId,jdbcType=BIGINT},
       </if>
-      <if test="doctorName != null" >
+      <if test="doctorName != null">
         #{doctorName,jdbcType=CHAR},
       </if>
-      <if test="doctorUser != null" >
+      <if test="doctorUser != null">
         #{doctorUser,jdbcType=CHAR},
       </if>
-      <if test="doctorPassword != null" >
+      <if test="doctorPassword != null">
         #{doctorPassword,jdbcType=CHAR},
       </if>
-      <if test="doctorIntro != null" >
+      <if test="doctorIntro != null">
         #{doctorIntro,jdbcType=CHAR},
       </if>
-      <if test="doctorEmail != null" >
+      <if test="doctorEmail != null">
         #{doctorEmail,jdbcType=CHAR},
       </if>
-      <if test="doctorMobile != null" >
+      <if test="doctorMobile != null">
         #{doctorMobile,jdbcType=CHAR},
       </if>
-      <if test="doctorTel != null" >
+      <if test="doctorTel != null">
         #{doctorTel,jdbcType=CHAR},
       </if>
-      <if test="doctorGender != null" >
+      <if test="doctorGender != null">
         #{doctorGender,jdbcType=BIT},
       </if>
-      <if test="doctorPho != null" >
+      <if test="doctorPho != null">
         #{doctorPho,jdbcType=LONGVARBINARY},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.model.Doctor" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.model.Doctor">
     update doctor
-    <set >
-      <if test="departmentId != null" >
-        department_id = #{departmentId,jdbcType=INTEGER},
+    <set>
+      <if test="departmentId != null">
+        department_id = #{departmentId,jdbcType=BIGINT},
       </if>
-      <if test="doctorName != null" >
+      <if test="doctorName != null">
         doctor_name = #{doctorName,jdbcType=CHAR},
       </if>
-      <if test="doctorUser != null" >
+      <if test="doctorUser != null">
         doctor_user = #{doctorUser,jdbcType=CHAR},
       </if>
-      <if test="doctorPassword != null" >
+      <if test="doctorPassword != null">
         doctor_password = #{doctorPassword,jdbcType=CHAR},
       </if>
-      <if test="doctorIntro != null" >
+      <if test="doctorIntro != null">
         doctor_intro = #{doctorIntro,jdbcType=CHAR},
       </if>
-      <if test="doctorEmail != null" >
+      <if test="doctorEmail != null">
         doctor_email = #{doctorEmail,jdbcType=CHAR},
       </if>
-      <if test="doctorMobile != null" >
+      <if test="doctorMobile != null">
         doctor_mobile = #{doctorMobile,jdbcType=CHAR},
       </if>
-      <if test="doctorTel != null" >
+      <if test="doctorTel != null">
         doctor_tel = #{doctorTel,jdbcType=CHAR},
       </if>
-      <if test="doctorGender != null" >
+      <if test="doctorGender != null">
         doctor_gender = #{doctorGender,jdbcType=BIT},
       </if>
-      <if test="doctorPho != null" >
+      <if test="doctorPho != null">
         doctor_pho = #{doctorPho,jdbcType=LONGVARBINARY},
       </if>
     </set>
-    where doctor_id = #{doctorId,jdbcType=INTEGER}
+    where doctor_id = #{doctorId,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.example.demo.model.Doctor" >
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.example.demo.model.Doctor">
     update doctor
-    set department_id = #{departmentId,jdbcType=INTEGER},
+    set department_id = #{departmentId,jdbcType=BIGINT},
       doctor_name = #{doctorName,jdbcType=CHAR},
       doctor_user = #{doctorUser,jdbcType=CHAR},
       doctor_password = #{doctorPassword,jdbcType=CHAR},
@@ -174,11 +166,11 @@
       doctor_tel = #{doctorTel,jdbcType=CHAR},
       doctor_gender = #{doctorGender,jdbcType=BIT},
       doctor_pho = #{doctorPho,jdbcType=LONGVARBINARY}
-    where doctor_id = #{doctorId,jdbcType=INTEGER}
+    where doctor_id = #{doctorId,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.example.demo.model.Doctor" >
+  <update id="updateByPrimaryKey" parameterType="com.example.demo.model.Doctor">
     update doctor
-    set department_id = #{departmentId,jdbcType=INTEGER},
+    set department_id = #{departmentId,jdbcType=BIGINT},
       doctor_name = #{doctorName,jdbcType=CHAR},
       doctor_user = #{doctorUser,jdbcType=CHAR},
       doctor_password = #{doctorPassword,jdbcType=CHAR},
@@ -187,6 +179,12 @@
       doctor_mobile = #{doctorMobile,jdbcType=CHAR},
       doctor_tel = #{doctorTel,jdbcType=CHAR},
       doctor_gender = #{doctorGender,jdbcType=BIT}
-    where doctor_id = #{doctorId,jdbcType=INTEGER}
+    where doctor_id = #{doctorId,jdbcType=BIGINT}
   </update>
+  <select id="selectByUsername" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from doctor
+    where doctor_user = #{doctorUser,jdbcType=CHAR}
+  </select>
 </mapper>

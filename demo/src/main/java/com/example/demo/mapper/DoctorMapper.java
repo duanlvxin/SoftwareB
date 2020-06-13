@@ -5,13 +5,13 @@ import com.example.demo.model.Doctor;
 import javax.print.Doc;
 
 public interface DoctorMapper {
-    int deleteByPrimaryKey(Integer doctorId);
+    int deleteByPrimaryKey(Long doctorId);
 
     int insert(Doctor record);
 
     int insertSelective(Doctor record);
 
-    Doctor selectByPrimaryKey(Integer doctorId);
+    Doctor selectByPrimaryKey(Long doctorId);
 
     int updateByPrimaryKeySelective(Doctor record);
 
