@@ -11,13 +11,11 @@ import org.apache.commons.lang3.StringUtils;
 public class TokenTools {
     /**
      * 生成Token放入Session
-     * @param request
      * @param tokenServerkey
      */
-    public static String createToken(HttpServletRequest request,String tokenServerkey){
-        String token = TokenProccessor.getInstance().makeToken();
-        request.getSession().setAttribute(tokenServerkey, token);
-        return token;
+    public static String createToken(String tokenServerkey){
+        //        request.getSession().setAttribute(tokenServerkey, token);
+        return TokenProccessor.getInstance().makeToken();
     }
 
     /**

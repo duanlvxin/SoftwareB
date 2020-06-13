@@ -4,11 +4,11 @@ import com.example.demo.user.UserServiceImpl;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
+import java.util.Map;
 
 @RestController
 @EnableAutoConfiguration
@@ -37,8 +37,8 @@ public class UserController {
     }
 
     @RequestMapping(value = "api/patient/login",method = RequestMethod.POST)
-    public JSONObject login(HttpServletRequest request) {
-        return JSONObject.parseObject(userService.patient_login(request));
+    public JSONObject login(@RequestParam Map<String, String> params) {
+        return JSONObject.parseObject(userService.patient_login(params));
     }
 
     @RequestMapping("api/docter/login")

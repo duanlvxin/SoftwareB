@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -70,11 +71,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String patient_login(HttpServletRequest request) {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        String token = request.getHeader("Authorization");
+    public String patient_login(Map<String, String> params) {
+        String username = params.get("username");
+        String password = params.get("password");
         Patient result = patientMapper.selectByUsername(username);
+        System.out.println("username"+username);
         if(result==null){
             return "{\n" +
                     "    \"data\": [],\n" +
@@ -108,61 +109,30 @@ public class UserServiceImpl implements UserService {
         }catch (Exception e){
             e.printStackTrace();
         }
-        if(token==null){
-            //生成token
-            create_token = TokenTools.createToken(request,username);
-            request.getSession().setAttribute(username, create_token);
-            return "{\n" +
-                    "    \"data\": {\n" +
-                    "        \"patient_id\": "+ result.getPatientId() +",\n" +
-                    "        \"patient_name\": \""+ result.getPatientName() +"\",\n" +
-                    "        \"patient_user\": \""+ result.getPatientUser()+"\",\n" +
-                    "        \"patient_mobile\": \""+ result.getPatientMobile() +"\",\n" +
-                    "        \"birthday\": \"" + formatBirthday +"\",\n" +
-                    "        \"patient_age\": " + age + ",\n" +
-                    "        \"address\": \""+ result.getAddress() +"\",\n" +
-                    "        \"token\": \""+ create_token+"\"\n" +
-                    "    },\n" +
-                    "    \"meta\": {\n" +
-                    "        \"msg\": \"登录成功\",\n" +
-                    "        \"status\": 200\n" +
-                    "    }\n" +
-                    "}";
-        }
-        else{
-            if(!TokenTools.judgeTokenIsEqual(request,"Authorization",username)){
-                return "{\n" +
-                        "    \"data\": [],\n" +
-                        "    \"meta\": {\n" +
-                        "        \"msg\": \"登录失败，token不正确\",\n" +
-                        "        \"status\": 403\n" +
-                        "    }\n" +
-                        "}";
-            }
-            return "{\n" +
-                    "    \"data\": {\n" +
-                    "        \"patient_id\": "+ result.getPatientId() +",\n" +
-                    "        \"patient_name\": \""+ result.getPatientName() +"\",\n" +
-                    "        \"patient_user\": \""+ result.getPatientUser()+"\",\n" +
-                    "        \"patient_mobile\": \""+ result.getPatientMobile() +"\",\n" +
-                    "        \"birthday\": \"" + formatBirthday +"\",\n" +
-                    "        \"patient_age\": " + age + ",\n" +
-                    "        \"address\": \""+ result.getAddress() +"\",\n" +
-                    "        \"token\": \""+ token+"\"\n" +
-                    "    },\n" +
-                    "    \"meta\": {\n" +
-                    "        \"msg\": \"登录成功\",\n" +
-                    "        \"status\": 200\n" +
-                    "    }\n" +
-                    "}";
-        }
+        //生成token
+        create_token = TokenTools.createToken(username);
+        return "{\n" +
+                "    \"data\": {\n" +
+                "        \"patient_id\": "+ result.getPatientId() +",\n" +
+                "        \"patient_name\": \""+ result.getPatientName() +"\",\n" +
+                "        \"patient_user\": \""+ result.getPatientUser()+"\",\n" +
+                "        \"patient_mobile\": \""+ result.getPatientMobile() +"\",\n" +
+                "        \"birthday\": \"" + formatBirthday +"\",\n" +
+                "        \"patient_age\": " + age + ",\n" +
+                "        \"address\": \""+ result.getAddress() +"\",\n" +
+                "        \"token\": \""+ create_token+"\"\n" +
+                "    },\n" +
+                "    \"meta\": {\n" +
+                "        \"msg\": \"登录成功\",\n" +
+                "        \"status\": 200\n" +
+                "    }\n" +
+                "}";
     }
 
     @Override
     public String doctor_login(HttpServletRequest request) {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        String token = request.getHeader("Authorization");
         Doctor result = doctorMapper.selectByUsername(username);
         if(result==null){
             return "{\n" +
@@ -185,57 +155,25 @@ public class UserServiceImpl implements UserService {
         }
 
         String create_token;
-        if(token==null){
-            //生成token
-            create_token = TokenTools.createToken(request,username);
-            request.getSession().setAttribute(username, create_token);
-            return "{\n" +
-                    "    \"data\": {\n" +
-                    "        \"doctor_id\": "+ result.getDoctorId() +",\n" +
-                    "        \"doctor_name\": \"" + result.getDoctorName() + "\",\n" +
-                    "        \"doctor_user\": \"" + result.getDoctorUser() + "\",\n" +
-                    "        \"doctor_intro\": \""+ result.getDoctorIntro() +"\",\n" +
-                    "        \"doctor_email\": \"" + result.getDoctorEmail() + "\",\n" +
-                    "        \"doctor_mobile\": \"" + result.getDoctorMobile() + "\",\n" +
-                    "        \"doctor_tel\": \"" + result.getDoctorTel() + "\",\n" +
-                    "        \"doctor_pho\": \"" + new String(result.getDoctorPho()) + "\",\n" +
-                    "        \"department_name\": \""+ result.getDepartmentId() +"\",\n" +
-                    "        \"token\": \"" + create_token + "\",\n" +
-                    "    },\n" +
-                    "    \"meta\": {\n" +
-                    "        \"msg\": \"登录成功\",\n" +
-                    "        \"status\": 200\n" +
-                    "    }\n" +
-                    "}";
-        }
-        else{
-            if(!TokenTools.judgeTokenIsEqual(request,"Authorization",username)){
-                return "{\n" +
-                        "    \"data\": [],\n" +
-                        "    \"meta\": {\n" +
-                        "        \"msg\": \"登录失败，token不正确\",\n" +
-                        "        \"status\": 403\n" +
-                        "    }\n" +
-                        "}";
-            }
-            return "{\n" +
-                    "    \"data\": {\n" +
-                    "        \"doctor_id\": "+ result.getDoctorId() +",\n" +
-                    "        \"doctor_name\": \"" + result.getDoctorName() + "\",\n" +
-                    "        \"doctor_user\": \"" + result.getDoctorUser() + "\",\n" +
-                    "        \"doctor_intro\": \""+ result.getDoctorIntro() +"\",\n" +
-                    "        \"doctor_email\": \"" + result.getDoctorEmail() + "\",\n" +
-                    "        \"doctor_mobile\": \"" + result.getDoctorMobile() + "\",\n" +
-                    "        \"doctor_tel\": \"" + result.getDoctorTel() + "\",\n" +
-                    "        \"doctor_pho\": \"" + new String(result.getDoctorPho()) + "\",\n" +
-                    "        \"department_name\": \""+ result.getDepartmentId() +"\",\n" +
-                    "        \"token\": \"" + token + "\",\n" +
-                    "    },\n" +
-                    "    \"meta\": {\n" +
-                    "        \"msg\": \"登录成功\",\n" +
-                    "        \"status\": 200\n" +
-                    "    }\n" +
-                    "}";
-        }
+        //生成token
+        create_token = TokenTools.createToken(username);
+        return "{\n" +
+                "    \"data\": {\n" +
+                "        \"doctor_id\": "+ result.getDoctorId() +",\n" +
+                "        \"doctor_name\": \"" + result.getDoctorName() + "\",\n" +
+                "        \"doctor_user\": \"" + result.getDoctorUser() + "\",\n" +
+                "        \"doctor_intro\": \""+ result.getDoctorIntro() +"\",\n" +
+                "        \"doctor_email\": \"" + result.getDoctorEmail() + "\",\n" +
+                "        \"doctor_mobile\": \"" + result.getDoctorMobile() + "\",\n" +
+                "        \"doctor_tel\": \"" + result.getDoctorTel() + "\",\n" +
+                "        \"doctor_pho\": \"" + new String(result.getDoctorPho()) + "\",\n" +
+                "        \"department_name\": \""+ result.getDepartmentId() +"\",\n" +
+                "        \"token\": \"" + create_token + "\",\n" +
+                "    },\n" +
+                "    \"meta\": {\n" +
+                "        \"msg\": \"登录成功\",\n" +
+                "        \"status\": 200\n" +
+                "    }\n" +
+                "}";
     }
 }
