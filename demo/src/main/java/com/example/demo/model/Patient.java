@@ -3,7 +3,7 @@ package com.example.demo.model;
 import java.util.Date;
 
 public class Patient {
-    private Integer patientId;
+    private Long patientId;
 
     private String patientUser;
 
@@ -19,11 +19,11 @@ public class Patient {
 
     private Boolean patientGender;
 
-    public Integer getPatientId() {
+    public Long getPatientId() {
         return patientId;
     }
 
-    public void setPatientId(Integer patientId) {
+    public void setPatientId(Long patientId) {
         this.patientId = patientId;
     }
 

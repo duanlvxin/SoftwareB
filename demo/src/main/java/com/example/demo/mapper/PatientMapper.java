@@ -3,13 +3,13 @@ package com.example.demo.mapper;
 import com.example.demo.model.Patient;
 
 public interface PatientMapper {
-    int deleteByPrimaryKey(Integer patientId);
+    int deleteByPrimaryKey(Long patientId);
 
     int insert(Patient record);
 
     int insertSelective(Patient record);
 
-    Patient selectByPrimaryKey(Integer patientId);
+    Patient selectByPrimaryKey(Long patientId);
 
     int updateByPrimaryKeySelective(Patient record);
 

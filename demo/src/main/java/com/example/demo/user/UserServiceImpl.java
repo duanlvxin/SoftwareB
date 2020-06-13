@@ -6,6 +6,7 @@ import com.example.demo.mapper.PatientMapper;
 import com.example.demo.model.Patient;
 import common.utils.age.computeAgeHelper;
 import common.utils.token.TokenTools;
+import org.apache.ibatis.jdbc.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,16 +31,13 @@ public class UserServiceImpl implements UserService {
         String username = params.get("patient_user");
         String password = params.get("patient_password");
         String mobile = params.get("patient_mobile");
-        System.out.println("mobile"+params.get("patient_mobile"));
-        System.out.println("birthday"+params.get("birthday"));
         Date birthday = java.sql.Date.valueOf(params.get("birthday"));
         String address = params.get("address");
         String patient_name = params.get("patient_name");
         Boolean patient_gender = Boolean.parseBoolean(params.get("patient_gender"));
 
         Patient patient = new Patient();
-        int patient_id = (int)System.currentTimeMillis();
-        patient.setPatientId(patient_id);
+        patient.setPatientId(null);
         patient.setPatientUser(username);
         patient.setPatientPassword(password);
         patient.setPatientMobile(mobile);
@@ -47,11 +45,12 @@ public class UserServiceImpl implements UserService {
         patient.setAddress(address);
         patient.setPatientName(patient_name);
         patient.setPatientGender(patient_gender);
-
+        Long patient_id = 0L;
+        Patient result = patientMapper.selectByUsername(username);
         try{
-            if(patientMapper.selectByUsername(username)==null){
-                System.out.println(patientMapper.selectByUsername(username));
+            if(result==null){
                 patientMapper.insert(patient);
+                patient_id = patientMapper.selectByUsername(username).getPatientId();
                 return "{\n" +
                         "    \"data\": {\n" +
                         "        \"patient_id\":"+ patient_id +"\n" +
