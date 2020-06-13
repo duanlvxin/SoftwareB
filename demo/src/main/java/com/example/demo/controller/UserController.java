@@ -22,18 +22,9 @@ public class UserController {
         return "hello";
     }
 
-    @RequestMapping(value = "api/patient/register",method = RequestMethod.PUT)
-    public JSONObject register(HttpServletRequest request) {
-        String username = request.getParameter("patient_user");
-        String password = request.getParameter("patient_password");
-        String mobile = request.getParameter("patient_mobile");
-        Date birthday = Date.valueOf(request.getParameter("birthday"));
-        String address = request.getParameter("address");
-        String patient_name = request.getParameter("patient_name");
-        Boolean patient_gender = Boolean.parseBoolean(request.getParameter("patient_gender"));
-
-        return JSONObject.parseObject(userService.register(username, password, mobile, birthday, address, patient_name,
-                patient_gender));
+    @RequestMapping(value = "api/patient/register",method = RequestMethod.POST)
+    public JSONObject register(@RequestBody Map<String, String> params) {
+        return JSONObject.parseObject(userService.register(params));
     }
 
     @RequestMapping(value = "api/patient/login",method = RequestMethod.POST)
@@ -41,8 +32,8 @@ public class UserController {
         return JSONObject.parseObject(userService.patient_login(params));
     }
 
-    @RequestMapping("api/docter/login")
-    public JSONObject doctor_login(HttpServletRequest request){
-        return JSONObject.parseObject(userService.doctor_login(request));
+    @RequestMapping(value="api/docter/login", method = RequestMethod.POST)
+    public JSONObject doctor_login(@RequestBody Map<String, String> params){
+        return JSONObject.parseObject(userService.doctor_login(params));
     }
 }

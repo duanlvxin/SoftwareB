@@ -8,8 +8,10 @@ import common.utils.age.computeAgeHelper;
 import common.utils.token.TokenTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.crypto.Data;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -22,8 +24,17 @@ public class UserServiceImpl implements UserService {
     DoctorMapper doctorMapper;
 
     @Override
-    public String register(String username, String password, String mobile, Date birthday, String address, String patient_name,
-                           Boolean patient_gender) {
+    public String register(Map<String, String> params) {
+        String username = params.get("patient_user");
+        String password = params.get("patient_password");
+        String mobile = params.get("patient_mobile");
+        System.out.println("mobile"+params.get("patient_mobile"));
+        System.out.println("birthday"+params.get("birthday"));
+        Date birthday = java.sql.Date.valueOf(params.get("birthday"));
+        String address = params.get("address");
+        String patient_name = params.get("patient_name");
+        Boolean patient_gender = Boolean.parseBoolean(params.get("patient_gender"));
+
         Patient patient = new Patient();
         int patient_id = (int)System.currentTimeMillis();
         patient.setPatientId(patient_id);
@@ -129,9 +140,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String doctor_login(HttpServletRequest request) {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
+    public String doctor_login(Map<String, String> params) {
+        String username = params.get("username");
+        String password = params.get("password");
         Doctor result = doctorMapper.selectByUsername(username);
         if(result==null){
             return "{\n" +
