@@ -75,7 +75,6 @@ public class UserServiceImpl implements UserService {
         String username = params.get("username");
         String password = params.get("password");
         Patient result = patientMapper.selectByUsername(username);
-        System.out.println("username"+username);
         if(result==null){
             return "{\n" +
                     "    \"data\": [],\n" +
