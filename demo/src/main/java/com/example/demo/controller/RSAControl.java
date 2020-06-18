@@ -127,7 +127,12 @@ public class RSAControl {
                 );
             } catch (Exception e) {
                 e.printStackTrace();
-                return JSON.parseObject("{\"msg\":\"内部错误\"}");
+                return JSON.parseObject("{" +
+                        "  \"meta\": {" +
+                        "    \"msg\": \"获取公匙失败\"," +
+                        "    \"status\": 500" +
+                        "  }" +
+                        "}");
             }
         } else {
             return JSON.parseObject(
