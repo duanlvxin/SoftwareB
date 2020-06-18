@@ -1,9 +1,11 @@
 package com.example.demo.user;
 
+import com.example.demo.controller.RSAControl;
 import com.example.demo.mapper.DoctorMapper;
 import com.example.demo.model.Doctor;
 import com.example.demo.mapper.PatientMapper;
 import com.example.demo.model.Patient;
+import common.utils.RSA.RSAUtils;
 import common.utils.age.computeAgeHelper;
 import common.utils.token.TokenTools;
 import org.apache.ibatis.jdbc.Null;
@@ -83,9 +85,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String patient_login(Map<String, String> params) {
+    public String patient_login(Map<String, String> params,HttpServletRequest request) {
         String username = params.get("username");
         String password = params.get("password");
+
+        String privateKey = request.getSession().getAttribute("privateKey").toString();
+        String decodedPassword = "";
+        System.out.println("privateKey:"+privateKey);
+        try{
+            decodedPassword = RSAUtils.privateDecrypt(password, RSAUtils.getPrivateKey(privateKey));
+            System.out.println("解密后文字: \r\n" + decodedPassword);
+        }catch (Exception e){
+            e.printStackTrace();
+            return "{\n" +
+                    "    \"data\": [],\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"解密失败\",\n" +
+                    "        \"status\": 500\n" +
+                    "    }\n" +
+                    "}";
+        }
+
         Patient result = patientMapper.selectByUsername(username);
         if(result==null){
             return "{\n" +
@@ -97,7 +117,7 @@ public class UserServiceImpl implements UserService {
                     "}";
         }
         String correct_password = result.getPatientPassword();
-        if(!password.equals(correct_password)){
+        if(!decodedPassword.equals(correct_password)){
             return "{\n" +
                     "    \"data\": [],\n" +
                     "    \"meta\": {\n" +

@@ -1,16 +1,16 @@
 package com.example.demo.model;
 
 public class RSA_Info {
-    private String username;
+    private Long id;
 
     private String privatekey;
 
-    public String getUsername() {
-        return username;
+    public Long getId() {
+        return id;
     }
 
-    public void setUsername(String username) {
-        this.username = username == null ? null : username.trim();
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getPrivatekey() {

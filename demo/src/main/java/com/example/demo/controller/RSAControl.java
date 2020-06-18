@@ -5,14 +5,26 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.demo.mapper.RSA_InfoMapper;
 import com.example.demo.model.RSA_Info;
 import common.utils.RSA.RSAUtils;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.web.accept.HeaderContentNegotiationStrategy;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @RestController
 @EnableAutoConfiguration
@@ -27,34 +39,101 @@ public class RSAControl {
      * @param:username
      * @return
      */
-    @RequestMapping(value = "api/getRSAKey",method = RequestMethod.GET)
-    public JSONObject generateRSAKey(@RequestParam String username){
-        try{
-            // 获取公钥和私钥
-            HashMap<String, Object> keys = RSAUtils.getKeys();
-            RSAPublicKey publicKey = (RSAPublicKey) keys.get("public");
-            RSAPrivateKey privateKey = (RSAPrivateKey) keys.get("private");
-            // 保存私钥到 redis，也可以保存到数据库
-            //如果不存在，插入，否则，更新私钥
-            RSA_Info rsa_info = new RSA_Info();
-            rsa_info.setUsername(username);
-            rsa_info.setPrivatekey(privateKey.toString());
-            if(rsa_infoMapper.selectByUsername(username)==null){
-                rsa_infoMapper.insert(rsa_info);
+
+    Map<String, String> keyPair = new HashMap<String, String>();
+    String publicKey = "";
+    String privateKey = "";
+//    HttpServletRequest request = null;
+
+    public Map<String,String> getKeyPair(){
+        return this.keyPair;
+    }
+
+    public String getPublicKey() {
+        return this.publicKey;
+    }
+
+    public String getPrivateKey() {
+        return this.privateKey;
+    }
+
+//    public void setRequest(HttpServletRequest request){
+//        this.request = request;
+//    }
+
+    public void setKeyPair(Map<String, String> keyPair){
+        this.keyPair = keyPair;
+    }
+
+    public void setPublicKey(String publicKey){
+        this.publicKey = publicKey;
+    }
+
+    public void setPrivateKey(String privateKey){
+        this.privateKey = privateKey;
+    }
+
+//    public void clearRSAKey(){
+//        //清除session中的privateKey和publicKey
+////        System.out.println("hello");
+////        System.out.println("request:"+this.request);
+//        if(this.request!=null){
+//            this.request.getSession().setAttribute("privateKey", "");
+//            System.out.println("herePub:"+request.getSession().getAttribute("publicKey"));
+//            this.request.getSession().setAttribute("publicKey", "");
+//        }
+//    }
+//
+//    public void setTimer() {
+//        final Timer timer = new Timer();
+//        //设定定时任务
+//        timer.schedule(new TimerTask() {
+//            //定时任务执行方法
+//            @Override
+//            public void run() {
+//                clearRSAKey();
+//            }
+//        }, 0, 2 * 1000);
+//    }
+
+    @RequestMapping(value = "api/getRSAKey", method = RequestMethod.GET)
+    public JSONObject generateRSAKey(HttpServletRequest request) {
+//        setRequest(request);
+//        System.out.println("request2:"+this.request);
+        System.out.println("pubbbbbbbbbbbbbb:"+request.getSession().getAttribute("publicKey"));
+        if (request.getSession().getAttribute("publicKey")==null) {
+            try {
+                // 获取公钥和私钥
+                setKeyPair(RSAUtils.createKeys(1024));
+                setPublicKey(keyPair.get("publicKey"));
+                setPrivateKey(keyPair.get("privateKey"));
+
+                request.getSession().setAttribute("publicKey",getPublicKey());
+                request.getSession().setAttribute("privateKey",getPrivateKey());
+                System.out.println("pub:"+request.getSession().getAttribute("publicKey"));
+                System.out.println("pri:"+request.getSession().getAttribute("privateKey"));
+
+                // 将公钥传到前端
+                return JSON.parseObject(
+                        "{" +
+                                "    \"data\":{" +
+                                "        \"publicKey\":\"" + request.getSession().getAttribute("publicKey") + "\"," +
+                                "    }," +
+                                "    \"meta\":{" +
+                                "        \"msg\":\"获取公匙成功\"," +
+                                "        \"status\":200" +
+                                "    }" +
+                                "}"
+                );
+            } catch (Exception e) {
+                e.printStackTrace();
+                return JSON.parseObject("{\"msg\":\"内部错误\"}");
             }
-            else{
-                rsa_infoMapper.updatePrivateKey(username,privateKey.toString());
-            }
-            // 将公钥传到前端
-            Map<String,String> map = new HashMap<String,String>();
-            // 注意返回modulus和exponent以16为基数的BigInteger的字符串表示形式
-            map.put("modulus", publicKey.getModulus().toString(16));
-            map.put("exponent", publicKey.getPublicExponent().toString(16));
+        } else {
             return JSON.parseObject(
                     "{" +
                             "    \"data\":{" +
-                            "        \"modulus\":\""+publicKey.getModulus().toString(16)+"\"," +
-                            "        \"exponent\":\""+publicKey.getPublicExponent().toString(16)+"\"" +
+                            "        \"publicKey\":\"" + request.getSession().getAttribute("publicKey") + "\"," +
                             "    }," +
                             "    \"meta\":{" +
                             "        \"msg\":\"获取公匙成功\"," +
@@ -62,35 +141,6 @@ public class RSAControl {
                             "    }" +
                             "}"
             );
-        }catch (Exception e) {
-            e.printStackTrace();
-            return JSON.parseObject("{\"msg\":\"内部错误\"}");
-        }
-    }
-
-    /**
-     *
-     * @Title: checkRSAKey
-     * @Description: 验证密码
-     * @param username
-     * @param password
-     * @return
-     * @date 2018年2月5日 下午4:25:43
-     * @author p7
-     */
-    @RequestMapping(value = "api/checkRSAKey/{username}/{password}",method = RequestMethod.GET)
-    public JSONObject checkRSAKey(@PathVariable String username, @PathVariable String password) {
-        RSA_Info record = rsa_infoMapper.selectByUsername(username);
-        Object privateKey = record.getPrivatekey();
-        System.out.println(privateKey);
-        try {
-            // 解密
-            String decryptByPrivateKey = RSAUtils.decryptByPrivateKey(password, (RSAPrivateKey) privateKey);
-            System.out.println(decryptByPrivateKey);
-            return JSON.parseObject("{\"msg\":\"解密成功\"}");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return JSON.parseObject("{\"msg\":\"解密失败\"}");
         }
     }
 }
