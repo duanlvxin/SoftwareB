@@ -90,11 +90,12 @@ public class UserServiceImpl implements UserService {
         String username = params.get("username");
         String password = params.get("password");
 
+        System.out.println("pri2:"+request.getSession().getAttribute("privateKey"));
         String privateKey = request.getSession().getAttribute("privateKey").toString();
         String decodedPassword = "";
         System.out.println("password:"+password);
         try{
-            decodedPassword = RSAUtils2.decryptByPrivateKey(decodedPassword,privateKey);
+            decodedPassword = RSAUtils2.decryptByPrivateKey(password,privateKey);
             System.out.println("解密后文字: \r\n" + decodedPassword);
         }catch (Exception e){
             e.printStackTrace();

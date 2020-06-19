@@ -81,8 +81,8 @@ public class RSAControl {
 
                 request.getSession().setAttribute("publicKey", getPublicKey());
                 request.getSession().setAttribute("privateKey", getPrivateKey());
-//                System.out.println("pub:"+request.getSession().getAttribute("publicKey"));
-//                System.out.println("pri:"+request.getSession().getAttribute("privateKey"));
+                System.out.println("pub:"+request.getSession().getAttribute("publicKey"));
+                System.out.println("pri:"+request.getSession().getAttribute("privateKey"));
 
                 // 将公钥传到前端
                 return JSON.parseObject(

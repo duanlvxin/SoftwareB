@@ -1,10 +1,6 @@
 package com.example.demo.mapper;
 
 import com.example.demo.model.Medrec;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-
-import java.util.List;
 
 public interface MedrecMapper {
     int deleteByPrimaryKey(Long medrecId);
@@ -18,6 +14,4 @@ public interface MedrecMapper {
     int updateByPrimaryKeySelective(Medrec record);
 
     int updateByPrimaryKey(Medrec record);
-
-    List<Medrec> selectByPatientId(Long patient_id);
 }

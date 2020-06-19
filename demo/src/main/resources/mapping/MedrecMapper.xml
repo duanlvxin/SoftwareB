@@ -1,28 +1,28 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.example.demo.mapper.MedrecMapper" >
-  <resultMap id="BaseResultMap" type="com.example.demo.model.Medrec" >
-    <id column="the_medrec_id" property="medrecId" jdbcType="BIGINT" />
-    <result column="doctor_id" property="doctorId" jdbcType="BIGINT" />
-    <result column="patient_id" property="patientId" jdbcType="BIGINT" />
-    <result column="attend_date" property="attendDate" jdbcType="TIMESTAMP" />
-    <result column="advice" property="advice" jdbcType="CHAR" />
-    <result column="conditions" property="conditions" jdbcType="CHAR" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.MedrecMapper">
+  <resultMap id="BaseResultMap" type="com.example.demo.model.Medrec">
+    <id column="medrec_id" jdbcType="BIGINT" property="medrecId" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="patient_id" jdbcType="BIGINT" property="patientId" />
+    <result column="attend_date" jdbcType="TIMESTAMP" property="attendDate" />
+    <result column="advice" jdbcType="CHAR" property="advice" />
+    <result column="conditions" jdbcType="CHAR" property="conditions" />
   </resultMap>
-  <sql id="Base_Column_List" >
+  <sql id="Base_Column_List">
     medrec_id, doctor_id, patient_id, attend_date, advice, conditions
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from medrec
     where medrec_id = #{medrecId,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from medrec
     where medrec_id = #{medrecId,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.example.demo.model.Medrec" >
+  <insert id="insert" parameterType="com.example.demo.model.Medrec">
     insert into medrec (medrec_id, doctor_id, patient_id, 
       attend_date, advice, conditions
       )
@@ -30,71 +30,71 @@
       #{attendDate,jdbcType=TIMESTAMP}, #{advice,jdbcType=CHAR}, #{conditions,jdbcType=CHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.example.demo.model.Medrec" >
+  <insert id="insertSelective" parameterType="com.example.demo.model.Medrec">
     insert into medrec
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="medrecId != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="medrecId != null">
         medrec_id,
       </if>
-      <if test="doctorId != null" >
+      <if test="doctorId != null">
         doctor_id,
       </if>
-      <if test="patientId != null" >
+      <if test="patientId != null">
         patient_id,
       </if>
-      <if test="attendDate != null" >
+      <if test="attendDate != null">
         attend_date,
       </if>
-      <if test="advice != null" >
+      <if test="advice != null">
         advice,
       </if>
-      <if test="conditions != null" >
+      <if test="conditions != null">
         conditions,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="medrecId != null" >
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="medrecId != null">
         #{medrecId,jdbcType=BIGINT},
       </if>
-      <if test="doctorId != null" >
+      <if test="doctorId != null">
         #{doctorId,jdbcType=BIGINT},
       </if>
-      <if test="patientId != null" >
+      <if test="patientId != null">
         #{patientId,jdbcType=BIGINT},
       </if>
-      <if test="attendDate != null" >
+      <if test="attendDate != null">
         #{attendDate,jdbcType=TIMESTAMP},
       </if>
-      <if test="advice != null" >
+      <if test="advice != null">
         #{advice,jdbcType=CHAR},
       </if>
-      <if test="conditions != null" >
+      <if test="conditions != null">
         #{conditions,jdbcType=CHAR},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.model.Medrec" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.model.Medrec">
     update medrec
-    <set >
-      <if test="doctorId != null" >
+    <set>
+      <if test="doctorId != null">
         doctor_id = #{doctorId,jdbcType=BIGINT},
       </if>
-      <if test="patientId != null" >
+      <if test="patientId != null">
         patient_id = #{patientId,jdbcType=BIGINT},
       </if>
-      <if test="attendDate != null" >
+      <if test="attendDate != null">
         attend_date = #{attendDate,jdbcType=TIMESTAMP},
       </if>
-      <if test="advice != null" >
+      <if test="advice != null">
         advice = #{advice,jdbcType=CHAR},
       </if>
-      <if test="conditions != null" >
+      <if test="conditions != null">
         conditions = #{conditions,jdbcType=CHAR},
       </if>
     </set>
     where medrec_id = #{medrecId,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.example.demo.model.Medrec" >
+  <update id="updateByPrimaryKey" parameterType="com.example.demo.model.Medrec">
     update medrec
     set doctor_id = #{doctorId,jdbcType=BIGINT},
       patient_id = #{patientId,jdbcType=BIGINT},
@@ -103,7 +103,109 @@
       conditions = #{conditions,jdbcType=CHAR}
     where medrec_id = #{medrecId,jdbcType=BIGINT}
   </update>
-  <select id="selectByPatientId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <resultMap id="BaseResultMap" type="com.example.demo.model.Medrec">
+    <id column="the_medrec_id" jdbcType="BIGINT" property="medrecId" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="patient_id" jdbcType="BIGINT" property="patientId" />
+    <result column="attend_date" jdbcType="TIMESTAMP" property="attendDate" />
+    <result column="advice" jdbcType="CHAR" property="advice" />
+    <result column="conditions" jdbcType="CHAR" property="conditions" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    medrec_id, doctor_id, patient_id, attend_date, advice, conditions
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from medrec
+    where medrec_id = #{medrecId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from medrec
+    where medrec_id = #{medrecId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.example.demo.model.Medrec">
+    insert into medrec (medrec_id, doctor_id, patient_id, 
+      attend_date, advice, conditions
+      )
+    values (#{medrecId,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT}, #{patientId,jdbcType=BIGINT}, 
+      #{attendDate,jdbcType=TIMESTAMP}, #{advice,jdbcType=CHAR}, #{conditions,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.demo.model.Medrec">
+    insert into medrec
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="medrecId != null">
+        medrec_id,
+      </if>
+      <if test="doctorId != null">
+        doctor_id,
+      </if>
+      <if test="patientId != null">
+        patient_id,
+      </if>
+      <if test="attendDate != null">
+        attend_date,
+      </if>
+      <if test="advice != null">
+        advice,
+      </if>
+      <if test="conditions != null">
+        conditions,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="medrecId != null">
+        #{medrecId,jdbcType=BIGINT},
+      </if>
+      <if test="doctorId != null">
+        #{doctorId,jdbcType=BIGINT},
+      </if>
+      <if test="patientId != null">
+        #{patientId,jdbcType=BIGINT},
+      </if>
+      <if test="attendDate != null">
+        #{attendDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="advice != null">
+        #{advice,jdbcType=CHAR},
+      </if>
+      <if test="conditions != null">
+        #{conditions,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.model.Medrec">
+    update medrec
+    <set>
+      <if test="doctorId != null">
+        doctor_id = #{doctorId,jdbcType=BIGINT},
+      </if>
+      <if test="patientId != null">
+        patient_id = #{patientId,jdbcType=BIGINT},
+      </if>
+      <if test="attendDate != null">
+        attend_date = #{attendDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="advice != null">
+        advice = #{advice,jdbcType=CHAR},
+      </if>
+      <if test="conditions != null">
+        conditions = #{conditions,jdbcType=CHAR},
+      </if>
+    </set>
+    where medrec_id = #{medrecId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.demo.model.Medrec">
+    update medrec
+    set doctor_id = #{doctorId,jdbcType=BIGINT},
+      patient_id = #{patientId,jdbcType=BIGINT},
+      attend_date = #{attendDate,jdbcType=TIMESTAMP},
+      advice = #{advice,jdbcType=CHAR},
+      conditions = #{conditions,jdbcType=CHAR}
+    where medrec_id = #{medrecId,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPatientId" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select medrec_id the_medrec_id,doctor_id,patient_id,attend_date,advice,conditions
     from medrec
     where patient_id = #{patient_id,jdbcType=BIGINT}
