@@ -81,7 +81,8 @@ public class RSAUtils {
         try{
             Cipher cipher = Cipher.getInstance(RSA_ALGORITHM);
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            return Base64.encodeBase64URLSafeString(rsaSplitCodec(cipher, Cipher.ENCRYPT_MODE, data.getBytes(CHARSET), publicKey.getModulus().bitLength()));
+            return new String(Base64.encodeBase64(rsaSplitCodec(cipher, Cipher.ENCRYPT_MODE, data.getBytes(CHARSET), publicKey.getModulus().bitLength())));
+
         }catch(Exception e){
             throw new RuntimeException("加密字符串[" + data + "]时遇到异常", e);
         }

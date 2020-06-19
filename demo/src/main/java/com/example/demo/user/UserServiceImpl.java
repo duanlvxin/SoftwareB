@@ -6,6 +6,7 @@ import com.example.demo.model.Doctor;
 import com.example.demo.mapper.PatientMapper;
 import com.example.demo.model.Patient;
 import common.utils.RSA.RSAUtils;
+import common.utils.RSA.RSAUtils2;
 import common.utils.age.computeAgeHelper;
 import common.utils.token.TokenTools;
 import org.apache.ibatis.jdbc.Null;
@@ -91,9 +92,9 @@ public class UserServiceImpl implements UserService {
 
         String privateKey = request.getSession().getAttribute("privateKey").toString();
         String decodedPassword = "";
-        System.out.println("privateKey:"+privateKey);
+        System.out.println("password:"+password);
         try{
-            decodedPassword = RSAUtils.privateDecrypt(password, RSAUtils.getPrivateKey(privateKey));
+            decodedPassword = RSAUtils2.decryptByPrivateKey(decodedPassword,privateKey);
             System.out.println("解密后文字: \r\n" + decodedPassword);
         }catch (Exception e){
             e.printStackTrace();

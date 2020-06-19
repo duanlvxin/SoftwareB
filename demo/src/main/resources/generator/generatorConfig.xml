@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
     <!-- 数据库驱动:选择你的本地硬盘上面的数据库驱动包-->
-    <classPathEntry location="C:\Users\Administrator\.m2\repository\mysql\mysql-connector-java\8.0.20\mysql-connector-java-8.0.20.jar"/>
+    <classPathEntry location="/root/mysql-connector-java-8.0.20.jar"/>
     <context id="DB2Tables" targetRuntime="MyBatis3">
         <commentGenerator>
             <property name="suppressDate" value="true"/>
@@ -33,6 +33,7 @@
         <!-- 要生成的表 tableName是数据库中的表名或视图名 domainObjectName是实体类名-->
 <!--        <table tableName="patient" domainObjectName="Patient" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>-->
 <!--        <table tableName="doctor" domainObjectName="Doctor" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>-->
-       <table tableName="rsa_info" domainObjectName="RSA_Info" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
+<!--       <table tableName="rsa_info" domainObjectName="RSA_Info" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>-->
+        <table tableName="medrec" domainObjectName="Medrec" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
     </context>
 </generatorConfiguration>

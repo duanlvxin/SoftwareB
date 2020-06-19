@@ -1,7 +1,6 @@
 package com.example.demo.user;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.Map;
 
 public interface UserService {
