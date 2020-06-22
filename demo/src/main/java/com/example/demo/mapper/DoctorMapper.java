@@ -2,6 +2,8 @@ package com.example.demo.mapper;
 
 import com.example.demo.model.Doctor;
 
+import java.util.List;
+
 import javax.print.Doc;
 
 public interface DoctorMapper {
@@ -21,5 +23,5 @@ public interface DoctorMapper {
 
     Doctor selectByUsername(String doctorUser);
 
-    Doctor selectByDepartmentId(Long departmentId);
+    List<Doctor> selectByDepartmentId(Long departmentId);
 }

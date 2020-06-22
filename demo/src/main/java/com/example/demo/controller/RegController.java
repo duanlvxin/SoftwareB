@@ -19,23 +19,18 @@ public class RegController {
     @Autowired
     RegServiceImpl RegService = new RegServiceImpl();
 
-    @RequestMapping("/")
-    public String test(){
-        return "hello";
-    }
-
     @RequestMapping(value = "api/patient/department-list",method = RequestMethod.GET)
     public JSONObject department_list() {
         return JSONObject.parseObject(RegService.department_list());
     }
 
     @RequestMapping(value = "api/patient/doctor-list",method = RequestMethod.GET)
-    public JSONObject doctor_list(@RequestBody Map<String, Long> params) {
-        return JSONObject.parseObject(RegService.doctor_list(params));
+    public JSONObject doctor_list(HttpServletRequest request) {
+        return JSONObject.parseObject(RegService.doctor_list(Long.parseLong(request.getParameter("department_id"))));
     }
 
-    @RequestMapping(value = "api/patient/doctor-list",method = RequestMethod.GET)
-    public JSONObject doctor_info(@RequestBody Map<String, String> params) {
-        return JSONObject.parseObject(RegService.doctor_info(params));
+    @RequestMapping(value = "api/patient/doctor-info",method = RequestMethod.GET)
+    public JSONObject doctor_info(HttpServletRequest request) {
+        return JSONObject.parseObject(RegService.doctor_info(Long.parseLong(request.getParameter("doctor_id"))));
     }
 }

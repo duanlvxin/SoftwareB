@@ -61,9 +61,8 @@ public class RegServiceImpl implements RegService {
     }
 
     @Override
-    public String doctor_list(Map<String, Long> params) {
+    public String doctor_list(Long department_id) {
 //        Date date = java.sql.Date.valueOf(params.get("date"));
-        Long department_id = params.get("department_id");
 
         List<Doctor> doctors = doctorMapper.selectByDepartmentId(department_id);
         StringBuilder str = new StringBuilder();
@@ -98,7 +97,7 @@ public class RegServiceImpl implements RegService {
     }
 
     @Override
-    public String doctor_info(Map<String, String> params) {
+    public String doctor_info(Long doctor_id) {
        return null;
     }
 
