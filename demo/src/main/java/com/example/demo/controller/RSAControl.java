@@ -3,29 +3,16 @@ package com.example.demo.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.mapper.RSA_InfoMapper;
-import com.example.demo.model.RSA_Info;
-import common.utils.RSA.RSAUtils;
 import common.utils.RSA.RSAUtils2;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.web.accept.HeaderContentNegotiationStrategy;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 @RestController
 @EnableAutoConfiguration
@@ -81,8 +68,8 @@ public class RSAControl {
 
                 request.getSession().setAttribute("publicKey", getPublicKey());
                 request.getSession().setAttribute("privateKey", getPrivateKey());
-//                System.out.println("pub:"+request.getSession().getAttribute("publicKey"));
-//                System.out.println("pri:"+request.getSession().getAttribute("privateKey"));
+                System.out.println("pub:"+request.getSession().getAttribute("publicKey"));
+                System.out.println("pri:"+request.getSession().getAttribute("privateKey"));
 
                 // 将公钥传到前端
                 return JSON.parseObject(
