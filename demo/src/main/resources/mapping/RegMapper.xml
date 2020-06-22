@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.mapper.RegMapper" >
+  <resultMap id="BaseResultMap" type="com.example.demo.model.Reg" >
+    <id column="reg_id" property="regId" jdbcType="BIGINT" />
+    <result column="doctor_id" property="doctorId" jdbcType="BIGINT" />
+    <result column="patient_id" property="patientId" jdbcType="BIGINT" />
+    <result column="reg_time" property="regTime" jdbcType="TIMESTAMP" />
+    <result column="res_date" property="resDate" jdbcType="DATE" />
+    <result column="period" property="period" jdbcType="BIT" />
+    <result column="amount" property="amount" jdbcType="REAL" />
+    <result column="serial_num" property="serialNum" jdbcType="INTEGER" />
+    <result column="state" property="state" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    reg_id, doctor_id, patient_id, reg_time, res_date, period, amount, serial_num, state
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from reg
+    where reg_id = #{regId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from reg
+    where reg_id = #{regId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.example.demo.model.Reg" >
+    insert into reg (reg_id, doctor_id, patient_id, 
+      reg_time, res_date, period, 
+      amount, serial_num, state)
+    values (#{regId,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT}, #{patientId,jdbcType=BIGINT}, 
+      #{regTime,jdbcType=TIMESTAMP}, #{resDate,jdbcType=DATE}, #{period,jdbcType=BIT}, 
+      #{amount,jdbcType=REAL}, #{serialNum,jdbcType=INTEGER}, #{state,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.demo.model.Reg" >
+    insert into reg
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="regId != null" >
+        reg_id,
+      </if>
+      <if test="doctorId != null" >
+        doctor_id,
+      </if>
+      <if test="patientId != null" >
+        patient_id,
+      </if>
+      <if test="regTime != null" >
+        reg_time,
+      </if>
+      <if test="resDate != null" >
+        res_date,
+      </if>
+      <if test="period != null" >
+        period,
+      </if>
+      <if test="amount != null" >
+        amount,
+      </if>
+      <if test="serialNum != null" >
+        serial_num,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="regId != null" >
+        #{regId,jdbcType=BIGINT},
+      </if>
+      <if test="doctorId != null" >
+        #{doctorId,jdbcType=BIGINT},
+      </if>
+      <if test="patientId != null" >
+        #{patientId,jdbcType=BIGINT},
+      </if>
+      <if test="regTime != null" >
+        #{regTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resDate != null" >
+        #{resDate,jdbcType=DATE},
+      </if>
+      <if test="period != null" >
+        #{period,jdbcType=BIT},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=REAL},
+      </if>
+      <if test="serialNum != null" >
+        #{serialNum,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.model.Reg" >
+    update reg
+    <set >
+      <if test="doctorId != null" >
+        doctor_id = #{doctorId,jdbcType=BIGINT},
+      </if>
+      <if test="patientId != null" >
+        patient_id = #{patientId,jdbcType=BIGINT},
+      </if>
+      <if test="regTime != null" >
+        reg_time = #{regTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resDate != null" >
+        res_date = #{resDate,jdbcType=DATE},
+      </if>
+      <if test="period != null" >
+        period = #{period,jdbcType=BIT},
+      </if>
+      <if test="amount != null" >
+        amount = #{amount,jdbcType=REAL},
+      </if>
+      <if test="serialNum != null" >
+        serial_num = #{serialNum,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=CHAR},
+      </if>
+    </set>
+    where reg_id = #{regId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.demo.model.Reg" >
+    update reg
+    set doctor_id = #{doctorId,jdbcType=BIGINT},
+      patient_id = #{patientId,jdbcType=BIGINT},
+      reg_time = #{regTime,jdbcType=TIMESTAMP},
+      res_date = #{resDate,jdbcType=DATE},
+      period = #{period,jdbcType=BIT},
+      amount = #{amount,jdbcType=REAL},
+      serial_num = #{serialNum,jdbcType=INTEGER},
+      state = #{state,jdbcType=CHAR}
+    where reg_id = #{regId,jdbcType=BIGINT}
+  </update>
+</mapper>

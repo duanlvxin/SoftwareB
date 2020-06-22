@@ -20,4 +20,6 @@ public interface DoctorMapper {
     int updateByPrimaryKey(Doctor record);
 
     Doctor selectByUsername(String doctorUser);
+
+    Doctor selectByDepartmentId(Long departmentId);
 }

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.DepartmentMapper">
+  <resultMap id="BaseResultMap" type="com.example.demo.model.Department">
+    <id column="department_id" jdbcType="BIGINT" property="departmentId" />
+    <result column="department_name" jdbcType="CHAR" property="departmentName" />
+    <result column="department_intro" jdbcType="CHAR" property="departmentIntro" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    department_id, department_name, department_intro
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from department
+    where department_id = #{departmentId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from department
+    where department_id = #{departmentId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.example.demo.model.Department">
+    insert into department (department_id, department_name, department_intro
+      )
+    values (#{departmentId,jdbcType=BIGINT}, #{departmentName,jdbcType=CHAR}, #{departmentIntro,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.demo.model.Department">
+    insert into department
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="departmentId != null">
+        department_id,
+      </if>
+      <if test="departmentName != null">
+        department_name,
+      </if>
+      <if test="departmentIntro != null">
+        department_intro,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="departmentId != null">
+        #{departmentId,jdbcType=BIGINT},
+      </if>
+      <if test="departmentName != null">
+        #{departmentName,jdbcType=CHAR},
+      </if>
+      <if test="departmentIntro != null">
+        #{departmentIntro,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.model.Department">
+    update department
+    <set>
+      <if test="departmentName != null">
+        department_name = #{departmentName,jdbcType=CHAR},
+      </if>
+      <if test="departmentIntro != null">
+        department_intro = #{departmentIntro,jdbcType=CHAR},
+      </if>
+    </set>
+    where department_id = #{departmentId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.demo.model.Department">
+    update department
+    set department_name = #{departmentName,jdbcType=CHAR},
+      department_intro = #{departmentIntro,jdbcType=CHAR}
+    where department_id = #{departmentId,jdbcType=BIGINT}
+  </update>
+  <select id="selectAllDepartment" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from department
+  </select>
+</mapper>
