@@ -234,4 +234,10 @@ public class UserServiceImpl implements UserService {
                 "    }\n" +
                 "}";
     }
+
+    @Override
+    public String patient_info(HttpServletRequest request){
+        Long doctor_id = Long.parseLong(request.getParameter("doctor_id"));
+        return "{\"data\":\"hhh\"}";
+    }
 }

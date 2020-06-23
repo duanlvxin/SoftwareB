@@ -1,7 +1,6 @@
 package com.example.demo.mapper;
 
 import com.example.demo.model.Medrec;
-import com.example.demo.model.Drug;
 import com.example.demo.model.trueDrug;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.xml.crypto.Data;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Service
@@ -52,7 +54,10 @@ public class MedrecServiceImpl implements MedrecService {
                 String doctor_name = doctorMapper.selectByPrimaryKey(medrec.getDoctorId()).getDoctorName();
                 trueMedrecItem.setDoctorName(doctor_name);
                 trueMedrecItem.setAdvice(medrec.getAdvice());
-                trueMedrecItem.setAttendDate(medrec.getAttendDate());
+                SimpleDateFormat myfmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String attendDate = myfmt.format(medrec.getAttendDate());
+                trueMedrecItem.setAttendDate(attendDate);
+                System.out.println(attendDate);
                 trueMedrecItem.setConditions(medrec.getConditions());
                 medrecData.append(trueMedrecItem.toString());
                 medrecData.append(",");

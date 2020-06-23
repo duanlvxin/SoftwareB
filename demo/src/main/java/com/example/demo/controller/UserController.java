@@ -35,4 +35,9 @@ public class UserController {
     public JSONObject doctor_login(@RequestBody Map<String, String> params){
         return JSONObject.parseObject(userService.doctor_login(params));
     }
+
+    @RequestMapping(value="api/patient/info", method = RequestMethod.GET)
+    public JSONObject patient_info(HttpServletRequest request){
+        return JSONObject.parseObject(userService.patient_info(request));
+    }
 }
