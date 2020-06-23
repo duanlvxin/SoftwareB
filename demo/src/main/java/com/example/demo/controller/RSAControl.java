@@ -70,15 +70,15 @@ public class RSAControl {
                 setPublicKey(RSAUtils2.getPublicKey(keypair));
                 setPrivateKey(RSAUtils2.getPrivateKey(keypair));
 
-                request.getSession().setAttribute("publicKey", getPublicKey());
-                request.getSession().setAttribute("privateKey", getPrivateKey());
+//                request.getSession().setAttribute("publicKey", getPublicKey());
+//                request.getSession().setAttribute("privateKey", getPrivateKey());
                 this.addSession(keysession,getPublicKey(),getPrivateKey());
 
                 // 将公钥传到前端
                 return JSON.parseObject(
                         "{" +
                                 "    \"data\":{" +
-                                "        \"publicKey\":\"" + request.getSession().getAttribute("publicKey") + "\"," +
+                                "        \"publicKey\":\"" + keysession.getPublicKey() + "\"," +
                                 "    }," +
                                 "    \"meta\":{" +
                                 "        \"msg\":\"获取公匙成功\"," +
@@ -99,7 +99,7 @@ public class RSAControl {
             return JSON.parseObject(
                     "{" +
                             "    \"data\":{" +
-                            "        \"publicKey\":\"" + request.getSession().getAttribute("publicKey") + "\"," +
+                            "        \"publicKey\":\"" + keysession.getPublicKey() + "\"," +
                             "    }," +
                             "    \"meta\":{" +
                             "        \"msg\":\"获取公匙成功\"," +
