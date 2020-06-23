@@ -1,21 +1,18 @@
-package com.example.demo.user;
+package com.example.demo.service.user;
 
-import com.example.demo.controller.RSAControl;
 import com.example.demo.mapper.DoctorMapper;
 import com.example.demo.model.Doctor;
 import com.example.demo.mapper.PatientMapper;
 import com.example.demo.model.Patient;
-import common.utils.RSA.RSAUtils;
+import com.example.demo.service.Session.keySession;
 import common.utils.RSA.RSAUtils2;
 import common.utils.age.computeAgeHelper;
 import common.utils.token.TokenTools;
-import org.apache.ibatis.jdbc.Null;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.crypto.Data;
 import java.util.Arrays;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -28,6 +25,8 @@ public class UserServiceImpl implements UserService {
     PatientMapper patientMapper;
     @Autowired
     DoctorMapper doctorMapper;
+    @Autowired
+    ApplicationContext context;
 
     @Override
     public String register(Map<String, String> params) {
@@ -90,10 +89,14 @@ public class UserServiceImpl implements UserService {
         String username = params.get("username");
         String password = params.get("password");
 
-        System.out.println("privatekey:"+request.getSession().getAttribute("privateKey"));
-        String privateKey = request.getSession().getAttribute("privateKey").toString();
+//        System.out.println("session1:"+request.getSession());
+//        System.out.println("privatekey:"+request.getSession().getAttribute("privateKey"));
+//        String privateKey = request.getSession().getAttribute("privateKey").toString();
+        keySession keysession = context.getBean(keySession.class);
+        String privateKey = keysession.getPrivateKey();
         String decodedPassword = "";
         System.out.println("password:"+password);
+        System.out.println("privatekey:"+privateKey);
         try{
             decodedPassword = RSAUtils2.decryptByPrivateKey(password,privateKey);
             System.out.println("解密后文字: \r\n" + decodedPassword);

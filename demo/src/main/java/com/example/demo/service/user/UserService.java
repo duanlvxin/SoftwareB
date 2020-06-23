@@ -1,4 +1,4 @@
-package com.example.demo.user;
+package com.example.demo.service.user;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;

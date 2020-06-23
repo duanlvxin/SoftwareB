@@ -189,4 +189,10 @@
     from doctor
     where department_id = #{departmentId,jdbcType=BIGINT}
   </select>
+  <select id="selectByUsername" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from doctor
+    where doctor_user = #{doctorUser,jdbcType=CHAR}
+  </select>
 </mapper>

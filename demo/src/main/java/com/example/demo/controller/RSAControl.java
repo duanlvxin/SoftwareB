@@ -3,29 +3,16 @@ package com.example.demo.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.mapper.RSA_InfoMapper;
-import com.example.demo.model.RSA_Info;
-import common.utils.RSA.RSAUtils;
 import common.utils.RSA.RSAUtils2;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import com.example.demo.service.Session.keySession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.web.accept.HeaderContentNegotiationStrategy;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 @RestController
 @EnableAutoConfiguration
@@ -33,6 +20,8 @@ public class RSAControl {
 
     @Autowired
     RSA_InfoMapper rsa_infoMapper;
+    @Autowired
+    ApplicationContext context;
 
     /**
      * @Title:generateRSAKey
@@ -72,7 +61,9 @@ public class RSAControl {
 
     @RequestMapping(value = "api/getRSAKey", method = RequestMethod.GET)
     public JSONObject generateRSAKey(HttpServletRequest request) {
-        if (request.getSession().getAttribute("publicKey") == null) {
+        keySession keysession = context.getBean(keySession.class);
+        System.out.println("privateKey:"+keysession.getPrivateKey());
+        if (keysession.getPrivateKey() == null) {
             try {
                 // 获取公钥和私钥
                 java.security.KeyPair keypair = RSAUtils2.initKey();
@@ -81,8 +72,7 @@ public class RSAControl {
 
                 request.getSession().setAttribute("publicKey", getPublicKey());
                 request.getSession().setAttribute("privateKey", getPrivateKey());
-//                System.out.println("pub:"+request.getSession().getAttribute("publicKey"));
-//                System.out.println("pri:"+request.getSession().getAttribute("privateKey"));
+                this.addSession(keysession,getPublicKey(),getPrivateKey());
 
                 // 将公钥传到前端
                 return JSON.parseObject(
@@ -119,35 +109,9 @@ public class RSAControl {
             );
         }
     }
+
+    public void addSession(keySession keysession, String publicKey, String privateKey){
+        keysession.setPublicKey(publicKey);
+        keysession.setPrivateKey(privateKey);
+    }
 }
-//    @RequestMapping(value = "api/getRSAKey", method = RequestMethod.GET)
-//    public JSONObject generateRSAKey(HttpServletRequest request) {
-//            try {
-//                // 获取公钥和私钥
-//                java.security.KeyPair keypair = RSAUtils2.initKey();
-//                setPublicKey(RSAUtils2.getPublicKey(keypair));
-//                setPrivateKey(RSAUtils2.getPrivateKey(keypair));
-//
-//                // 将公钥传到前端
-//                return JSON.parseObject(
-//                        "{" +
-//                                "    \"data\":{" +
-//                                "        \"publicKey\":\"" + getPublicKey() + "\"," +
-//                                "    }," +
-//                                "    \"meta\":{" +
-//                                "        \"msg\":\"获取公匙成功\"," +
-//                                "        \"status\":200" +
-//                                "    }" +
-//                                "}"
-//                );
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                return JSON.parseObject("{" +
-//                        "  \"meta\": {" +
-//                        "    \"msg\": \"获取公匙失败\"," +
-//                        "    \"status\": 500" +
-//                        "  }" +
-//                        "}");
-//            }
-//    }
-//}

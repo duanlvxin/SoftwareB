@@ -1,6 +1,4 @@
-package com.example.demo.reg;
-
-import java.util.Map;
+package com.example.demo.service.reg;
 
 public interface RegService {
     String department_list();

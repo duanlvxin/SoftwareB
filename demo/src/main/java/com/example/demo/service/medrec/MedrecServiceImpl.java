@@ -1,18 +1,13 @@
-package com.example.demo.medrec;
+package com.example.demo.service.medrec;
 
 import com.example.demo.mapper.DoctorMapper;
 import com.example.demo.mapper.MedrecMapper;
-import com.example.demo.mapper.PatientMapper;
 import com.example.demo.model.Medrec;
-import com.example.demo.model.Patient;
 import com.example.demo.model.trueMedrec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class MedrecServiceImpl implements MedrecService {

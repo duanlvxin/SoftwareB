@@ -1,19 +1,13 @@
-package com.example.demo.reg;
+package com.example.demo.service.reg;
 
 import com.example.demo.mapper.RegMapper;
 import com.example.demo.mapper.DepartmentMapper;
 import com.example.demo.mapper.DoctorMapper;
-import com.example.demo.model.Reg;
 import com.example.demo.model.Department;
 import com.example.demo.model.Doctor;
-import com.example.demo.reg.RegService;
-import common.utils.age.computeAgeHelper;
-import common.utils.token.TokenTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service

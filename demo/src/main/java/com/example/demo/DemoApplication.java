@@ -1,8 +1,10 @@
 package com.example.demo;
 
 import com.example.demo.controller.RSAControl;
+import org.apache.naming.factory.BeanFactory;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -41,8 +43,6 @@ public class DemoApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(DemoApplication.class, args);
-//        RSAControl rsaControl = new RSAControl();
-//        rsaControl.setTimer();
     }
 
     @Bean
