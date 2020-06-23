@@ -39,17 +39,20 @@ public class UserServiceImpl implements UserService {
         Boolean patient_gender = Boolean.parseBoolean(params.get("patient_gender"));
 
         Patient patient = new Patient();
-        patient.setPatientId(null);
-        patient.setPatientUser(username);
-        patient.setPatientPassword(password);
-        patient.setPatientMobile(mobile);
-        patient.setBirthday(birthday);
-        patient.setAddress(address);
-        patient.setPatientName(patient_name);
-        patient.setPatientGender(patient_gender);
-        Long patient_id = 0L;
-        Patient result = patientMapper.selectByUsername(username);
         try{
+            patient.setPatientId(null);
+            patient.setPatientUser(username);
+            //解密password存入数据库
+            keySession keysession = context.getBean(keySession.class);
+            String privateKey = keysession.getPrivateKey();
+            patient.setPatientPassword(RSAUtils2.decryptByPrivateKey(password,privateKey));
+            patient.setPatientMobile(mobile);
+            patient.setBirthday(birthday);
+            patient.setAddress(address);
+            patient.setPatientName(patient_name);
+            patient.setPatientGender(patient_gender);
+            Long patient_id = 0L;
+            Patient result = patientMapper.selectByUsername(username);
             if(result==null){
                 patientMapper.insert(patient);
                 patient_id = patientMapper.selectByUsername(username).getPatientId();
@@ -89,14 +92,9 @@ public class UserServiceImpl implements UserService {
         String username = params.get("username");
         String password = params.get("password");
 
-//        System.out.println("session1:"+request.getSession());
-//        System.out.println("privatekey:"+request.getSession().getAttribute("privateKey"));
-//        String privateKey = request.getSession().getAttribute("privateKey").toString();
         keySession keysession = context.getBean(keySession.class);
         String privateKey = keysession.getPrivateKey();
         String decodedPassword = "";
-        System.out.println("password:"+password);
-        System.out.println("privatekey:"+privateKey);
         try{
             decodedPassword = RSAUtils2.decryptByPrivateKey(password,privateKey);
             System.out.println("解密后文字: \r\n" + decodedPassword);
@@ -169,6 +167,24 @@ public class UserServiceImpl implements UserService {
     public String doctor_login(Map<String, String> params) {
         String username = params.get("username");
         String password = params.get("password");
+
+        keySession keysession = context.getBean(keySession.class);
+        String privateKey = keysession.getPrivateKey();
+        String decodedPassword = "";
+        try{
+            decodedPassword = RSAUtils2.decryptByPrivateKey(password,privateKey);
+            System.out.println("解密后文字: \r\n" + decodedPassword);
+        }catch (Exception e){
+            e.printStackTrace();
+            return "{\n" +
+                    "    \"data\": [],\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"解密失败\",\n" +
+                    "        \"status\": 500\n" +
+                    "    }\n" +
+                    "}";
+        }
+
         Doctor result = null;
         try{
             result = doctorMapper.selectByUsername(username);
@@ -185,7 +201,7 @@ public class UserServiceImpl implements UserService {
                     "}";
         }
         String correct_password = result.getDoctorPassword();
-        if(!password.equals(correct_password)){
+        if(!decodedPassword.equals(correct_password)){
             return "{\n" +
                     "    \"data\": [],\n" +
                     "    \"meta\": {\n" +
