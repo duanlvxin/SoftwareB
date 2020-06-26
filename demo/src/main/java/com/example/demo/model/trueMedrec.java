@@ -1,13 +1,11 @@
 package com.example.demo.model;
 
-import java.util.Date;
-
 public class trueMedrec {
     private Long medrecId;
 
     private String doctorName;
 
-    private Date attendDate;
+    private String attendDate;
 
     private String advice;
 
@@ -29,11 +27,11 @@ public class trueMedrec {
         this.doctorName = doctorName;
     }
 
-    public Date getAttendDate() {
+    public String getAttendDate() {
         return attendDate;
     }
 
-    public void setAttendDate(Date attendDate) {
+    public void setAttendDate(String attendDate) {
         this.attendDate = attendDate;
     }
 

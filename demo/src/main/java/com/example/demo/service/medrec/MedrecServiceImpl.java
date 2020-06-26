@@ -1,18 +1,19 @@
-package com.example.demo.medrec;
+package com.example.demo.service.medrec;
 
 import com.example.demo.mapper.DoctorMapper;
 import com.example.demo.mapper.MedrecMapper;
 import com.example.demo.mapper.PatientMapper;
 import com.example.demo.model.Medrec;
-import com.example.demo.model.Patient;
+import com.example.demo.model.Drug;
+import com.example.demo.model.trueDrug;
 import com.example.demo.model.trueMedrec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
+import javax.xml.crypto.Data;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class MedrecServiceImpl implements MedrecService {
@@ -22,6 +23,9 @@ public class MedrecServiceImpl implements MedrecService {
 
     @Autowired
     DoctorMapper doctorMapper;
+
+    @Autowired
+    PatientMapper patientMapper;
 
     @Override
     public String getAllMedrec(Long patient_id){
@@ -50,7 +54,10 @@ public class MedrecServiceImpl implements MedrecService {
                 String doctor_name = doctorMapper.selectByPrimaryKey(medrec.getDoctorId()).getDoctorName();
                 trueMedrecItem.setDoctorName(doctor_name);
                 trueMedrecItem.setAdvice(medrec.getAdvice());
-                trueMedrecItem.setAttendDate(medrec.getAttendDate());
+                SimpleDateFormat myfmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String attendDate = myfmt.format(medrec.getAttendDate());
+                trueMedrecItem.setAttendDate(attendDate);
+                System.out.println(attendDate);
                 trueMedrecItem.setConditions(medrec.getConditions());
                 medrecData.append(trueMedrecItem.toString());
                 medrecData.append(",");
@@ -80,11 +87,52 @@ public class MedrecServiceImpl implements MedrecService {
 
     @Override
     public String getSingleMedrec(Long medrec_id){
-        return "{\n" +
-                "    \"meta\": {\n" +
-                "        \"msg\": \"获取病历成功!\",\n" +
-                "        \"status\": 200\n" +
-                "    }\n" +
-                "}";
+        try{
+            Medrec result = medrecMapper.selectByPrimaryKey(medrec_id);
+            if(result==null){
+                return "{\n" +
+                        "    \"data\": {\n" +
+                        "    },\n" +
+                        "    \"meta\": {\n" +
+                        "        \"msg\": \"该病例不存在！\",\n" +
+                        "        \"status\": 404\n" +
+                        "    }\n" +
+                        "}";
+            }
+            String patient_name = patientMapper.selectByPrimaryKey(result.getPatientId()).getPatientName();
+            String codition = result.getConditions();
+            String advice = result.getAdvice();
+            String data = "";
+            StringBuilder drugsData = new StringBuilder();
+            List<trueDrug> drugs = medrecMapper.getSingleMedrec(medrec_id);
+            System.out.println("size:"+drugs.size());
+            for(trueDrug drug:drugs){
+                drugsData.append(drug.toString());
+                drugsData.append(",");
+            }
+            System.out.println("drugsData:"+drugsData);
+            drugsData.delete(drugsData.length()-1,drugsData.length());
+            return "{\n" +
+                    "    \"data\": {\n" +
+                    "        \"medrec_id \": " + medrec_id + ",\n" +
+                    "        \"patient_name\": \""+ patient_name +"\",\n" +
+                    "        \"condition\": \""+ codition +"\",\n" +
+                    "        \"advice\": \""+ advice +"\",\n" +
+                    "        \"drug\":[" + drugsData + "]\n" +
+                    "    },\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"获取成功\",\n" +
+                    "        \"status\": 200\n" +
+                    "    }\n" +
+                    "}";
+        }catch (Exception e){
+            e.printStackTrace();
+            return "{\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"获取单个病历失败!\",\n" +
+                    "        \"status\": 500\n" +
+                    "    }\n" +
+                    "}";
+        }
     }
 }

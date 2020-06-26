@@ -4,11 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.mapper.RSA_InfoMapper;
 import common.utils.RSA.RSAUtils2;
+import com.example.demo.service.Session.keySession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -20,6 +20,8 @@ public class RSAControl {
 
     @Autowired
     RSA_InfoMapper rsa_infoMapper;
+    @Autowired
+    ApplicationContext context;
 
     /**
      * @Title:generateRSAKey
@@ -59,23 +61,24 @@ public class RSAControl {
 
     @RequestMapping(value = "api/getRSAKey", method = RequestMethod.GET)
     public JSONObject generateRSAKey(HttpServletRequest request) {
-        if (request.getSession().getAttribute("publicKey") == null) {
+        keySession keysession = context.getBean(keySession.class);
+        System.out.println("privateKey:"+keysession.getPrivateKey());
+        if (keysession.getPrivateKey() == null) {
             try {
                 // 获取公钥和私钥
                 java.security.KeyPair keypair = RSAUtils2.initKey();
                 setPublicKey(RSAUtils2.getPublicKey(keypair));
                 setPrivateKey(RSAUtils2.getPrivateKey(keypair));
 
-                request.getSession().setAttribute("publicKey", getPublicKey());
-                request.getSession().setAttribute("privateKey", getPrivateKey());
-                System.out.println("pub:"+request.getSession().getAttribute("publicKey"));
-                System.out.println("pri:"+request.getSession().getAttribute("privateKey"));
+//                request.getSession().setAttribute("publicKey", getPublicKey());
+//                request.getSession().setAttribute("privateKey", getPrivateKey());
+                this.addSession(keysession,getPublicKey(),getPrivateKey());
 
                 // 将公钥传到前端
                 return JSON.parseObject(
                         "{" +
                                 "    \"data\":{" +
-                                "        \"publicKey\":\"" + request.getSession().getAttribute("publicKey") + "\"," +
+                                "        \"publicKey\":\"" + keysession.getPublicKey() + "\"," +
                                 "    }," +
                                 "    \"meta\":{" +
                                 "        \"msg\":\"获取公匙成功\"," +
@@ -96,7 +99,7 @@ public class RSAControl {
             return JSON.parseObject(
                     "{" +
                             "    \"data\":{" +
-                            "        \"publicKey\":\"" + request.getSession().getAttribute("publicKey") + "\"," +
+                            "        \"publicKey\":\"" + keysession.getPublicKey() + "\"," +
                             "    }," +
                             "    \"meta\":{" +
                             "        \"msg\":\"获取公匙成功\"," +
@@ -106,35 +109,9 @@ public class RSAControl {
             );
         }
     }
+
+    public void addSession(keySession keysession, String publicKey, String privateKey){
+        keysession.setPublicKey(publicKey);
+        keysession.setPrivateKey(privateKey);
+    }
 }
-//    @RequestMapping(value = "api/getRSAKey", method = RequestMethod.GET)
-//    public JSONObject generateRSAKey(HttpServletRequest request) {
-//            try {
-//                // 获取公钥和私钥
-//                java.security.KeyPair keypair = RSAUtils2.initKey();
-//                setPublicKey(RSAUtils2.getPublicKey(keypair));
-//                setPrivateKey(RSAUtils2.getPrivateKey(keypair));
-//
-//                // 将公钥传到前端
-//                return JSON.parseObject(
-//                        "{" +
-//                                "    \"data\":{" +
-//                                "        \"publicKey\":\"" + getPublicKey() + "\"," +
-//                                "    }," +
-//                                "    \"meta\":{" +
-//                                "        \"msg\":\"获取公匙成功\"," +
-//                                "        \"status\":200" +
-//                                "    }" +
-//                                "}"
-//                );
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                return JSON.parseObject("{" +
-//                        "  \"meta\": {" +
-//                        "    \"msg\": \"获取公匙失败\"," +
-//                        "    \"status\": 500" +
-//                        "  }" +
-//                        "}");
-//            }
-//    }
-//}

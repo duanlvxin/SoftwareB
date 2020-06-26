@@ -1,4 +1,4 @@
-package com.example.demo.reg;
+package com.example.demo.service.reg;
 
 import com.example.demo.mapper.DepartmentMapper;
 import com.example.demo.mapper.DoctorMapper;
@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
-public class RegServiceImpl implements RegService {
+public class RegServiceImpl implements com.example.demo.reg.RegService {
     @Autowired
     RegMapper regMapper;
     @Autowired

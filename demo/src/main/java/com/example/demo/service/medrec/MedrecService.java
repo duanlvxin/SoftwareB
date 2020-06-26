@@ -1,6 +1,4 @@
-package com.example.demo.medrec;
-
-import java.util.Map;
+package com.example.demo.service.medrec;
 
 public interface MedrecService {
 

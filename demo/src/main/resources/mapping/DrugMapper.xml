@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.mapper.DrugMapper" >
+  <resultMap id="BaseResultMap" type="com.example.demo.model.Drug" >
+    <id column="drug_id" property="drugId" jdbcType="BIGINT" />
+    <result column="drug_name" property="drugName" jdbcType="CHAR" />
+    <result column="drug_stock" property="drugStock" jdbcType="INTEGER" />
+    <result column="drug_price" property="drugPrice" jdbcType="REAL" />
+    <result column="drug_effect" property="drugEffect" jdbcType="CHAR" />
+    <result column="drug_specification" property="drugSpecification" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    drug_id, drug_name, drug_stock, drug_price, drug_effect, drug_specification
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from drug
+    where drug_id = #{drugId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from drug
+    where drug_id = #{drugId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.example.demo.model.Drug" >
+    insert into drug (drug_id, drug_name, drug_stock, 
+      drug_price, drug_effect, drug_specification
+      )
+    values (#{drugId,jdbcType=BIGINT}, #{drugName,jdbcType=CHAR}, #{drugStock,jdbcType=INTEGER}, 
+      #{drugPrice,jdbcType=REAL}, #{drugEffect,jdbcType=CHAR}, #{drugSpecification,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.demo.model.Drug" >
+    insert into drug
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="drugId != null" >
+        drug_id,
+      </if>
+      <if test="drugName != null" >
+        drug_name,
+      </if>
+      <if test="drugStock != null" >
+        drug_stock,
+      </if>
+      <if test="drugPrice != null" >
+        drug_price,
+      </if>
+      <if test="drugEffect != null" >
+        drug_effect,
+      </if>
+      <if test="drugSpecification != null" >
+        drug_specification,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="drugId != null" >
+        #{drugId,jdbcType=BIGINT},
+      </if>
+      <if test="drugName != null" >
+        #{drugName,jdbcType=CHAR},
+      </if>
+      <if test="drugStock != null" >
+        #{drugStock,jdbcType=INTEGER},
+      </if>
+      <if test="drugPrice != null" >
+        #{drugPrice,jdbcType=REAL},
+      </if>
+      <if test="drugEffect != null" >
+        #{drugEffect,jdbcType=CHAR},
+      </if>
+      <if test="drugSpecification != null" >
+        #{drugSpecification,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.model.Drug" >
+    update drug
+    <set >
+      <if test="drugName != null" >
+        drug_name = #{drugName,jdbcType=CHAR},
+      </if>
+      <if test="drugStock != null" >
+        drug_stock = #{drugStock,jdbcType=INTEGER},
+      </if>
+      <if test="drugPrice != null" >
+        drug_price = #{drugPrice,jdbcType=REAL},
+      </if>
+      <if test="drugEffect != null" >
+        drug_effect = #{drugEffect,jdbcType=CHAR},
+      </if>
+      <if test="drugSpecification != null" >
+        drug_specification = #{drugSpecification,jdbcType=CHAR},
+      </if>
+    </set>
+    where drug_id = #{drugId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.demo.model.Drug" >
+    update drug
+    set drug_name = #{drugName,jdbcType=CHAR},
+      drug_stock = #{drugStock,jdbcType=INTEGER},
+      drug_price = #{drugPrice,jdbcType=REAL},
+      drug_effect = #{drugEffect,jdbcType=CHAR},
+      drug_specification = #{drugSpecification,jdbcType=CHAR}
+    where drug_id = #{drugId,jdbcType=BIGINT}
+  </update>
+</mapper>
