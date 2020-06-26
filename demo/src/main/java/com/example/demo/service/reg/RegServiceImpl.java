@@ -5,7 +5,6 @@ import com.example.demo.mapper.DoctorMapper;
 import com.example.demo.mapper.RegMapper;
 import com.example.demo.model.Department;
 import com.example.demo.model.Doctor;
-import com.example.demo.model.Patient;
 import com.example.demo.model.Reg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -96,30 +95,30 @@ public class RegServiceImpl implements com.example.demo.reg.RegService {
         Doctor doctor = doctorMapper.selectByPrimaryKey(doctor_id);
         Long department_id = doctor.getDepartmentId();
         String doctor_name = doctor.getDoctorName();
-        String doctor_username = doctor.getDoctorUser();
-        String doctor_password = doctor.getDoctorPassword();
-        String doctor_intro = doctor.getDoctorIntro();
-        String doctor_email = doctor.getDoctorEmail();
-        String doctor_mobile = doctor.getDoctorMobile();
-        String doctor_tel = doctor.getDoctorTel();
-        Boolean doctor_gender = doctor.getDoctorGender();
+        String doctor_intro = doctor.getDoctorIntro() == null ? "" : doctor.getDoctorIntro();
+        String doctor_email = doctor.getDoctorEmail() == null ? "" : doctor.getDoctorEmail();
+        String doctor_mobile = doctor.getDoctorMobile() == null ? "" : doctor.getDoctorMobile();
+        String doctor_tel = doctor.getDoctorTel() == null ? "" : doctor.getDoctorTel();
+        String doctor_gender = doctor.getDoctorGender() ? "男" : "女";
         byte[] doctor_photo = doctor.getDoctorPho();
-        final Base64.Encoder encoder = Base64.getEncoder();
-        final String encoded_photo = "data:image/jpeg;base64," + encoder.encodeToString(doctor_photo);
-        int am_remainder = 5-regMapper.countReserved(doctor_id, res_date, false);
-        int pm_remainder = 5-regMapper.countReserved(doctor_id, res_date, true);
+        System.out.println("doctorphoto:" + Arrays.toString(doctor_photo));
+        String encoded_photo = "";
+        if (doctor_photo != null) {
+            final Base64.Encoder encoder = Base64.getEncoder();
+            encoded_photo = "data:image/jpeg;base64," + encoder.encodeToString(doctor_photo);
+        }
+        int am_remainder = 5 - regMapper.countReserved(doctor_id, res_date, false);
+        int pm_remainder = 5 - regMapper.countReserved(doctor_id, res_date, true);
         try {
             return "{\n" +
                     "    \"data\": {\n" +
                     "        \"department_id\":" + department_id + ",\n" +
                     "        \"doctor_name\":\"" + doctor_name + "\",\n" +
-                    "        \"doctor_username\":\"" + doctor_username + "\",\n" +
-                    "        \"doctor_password\":\"" + doctor_password + "\",\n" +
                     "        \"doctor_intro\":\"" + doctor_intro + "\",\n" +
                     "        \"doctor_email\":\"" + doctor_email + "\",\n" +
                     "        \"doctor_mobile\":\"" + doctor_mobile + "\",\n" +
                     "        \"doctor_tel\":\"" + doctor_tel + "\",\n" +
-                    "        \"doctor_gender\":" + doctor_gender + ",\n" +
+                    "        \"doctor_gender\":\"" + doctor_gender + "\",\n" +
                     "        \"doctor_photo\":\"" + encoded_photo + "\",\n" +
                     "        \"am_remainder\":" + am_remainder + ",\n" +
                     "        \"pm_remainder\":" + pm_remainder + ",\n" +
@@ -159,14 +158,14 @@ public class RegServiceImpl implements com.example.demo.reg.RegService {
         reg.setPeriod(period);
         reg.setAmount((float) 15.00);
         reg.setState(0);
-        int reserved = regMapper.countReserved(doctor_id,res_date,period);
-        reg.setSerialNum(reserved+1);
+        int reserved = regMapper.countReserved(doctor_id, res_date, period);
+        reg.setSerialNum(reserved + 1);
         Long reg_id = 0L;
 
 
         try {
             regMapper.insert(reg);
-            reg_id = regMapper.selectByResDatePeriodSerialNum(res_date,period,reserved+1).getRegId();
+            reg_id = regMapper.selectByResDatePeriodSerialNum(res_date, period, reserved + 1).getRegId();
             SimpleDateFormat myfmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String reg_time = myfmt.format(cur_time);
             return "{\n" +
@@ -180,7 +179,7 @@ public class RegServiceImpl implements com.example.demo.reg.RegService {
                     "        \"status\": 201\n" +
                     "    }\n" +
                     "}";
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return "{\n" +
                     "    \"data\": [],\n" +
