@@ -5,6 +5,7 @@ import com.example.demo.model.Doctor;
 import com.example.demo.mapper.PatientMapper;
 import com.example.demo.model.Patient;
 import com.example.demo.service.Session.keySession;
+import com.example.demo.service.Session.tokenSession;
 import common.utils.RSA.RSAUtils2;
 import common.utils.age.computeAgeHelper;
 import common.utils.token.TokenTools;
@@ -45,7 +46,18 @@ public class UserServiceImpl implements UserService {
             //解密password存入数据库
             keySession keysession = context.getBean(keySession.class);
             String privateKey = keysession.getPrivateKey();
-            patient.setPatientPassword(RSAUtils2.decryptByPrivateKey(password,privateKey));
+            try{
+                patient.setPatientPassword(RSAUtils2.decryptByPrivateKey(password,privateKey));
+            }
+            catch (Exception e){
+                return "{\n" +
+                        "    \"data\": [],\n" +
+                        "    \"meta\": {\n" +
+                        "        \"msg\": \"解密失败\",\n" +
+                        "        \"status\": 500\n" +
+                        "    }\n" +
+                        "}";
+            }
             patient.setPatientMobile(mobile);
             patient.setBirthday(birthday);
             patient.setAddress(address);
@@ -131,29 +143,39 @@ public class UserServiceImpl implements UserService {
         }
 
         String create_token;
-        computeAgeHelper ageHelper = new computeAgeHelper();
-        int age = 0;
-        String formatBirthday = "";
-        Date birthday = result.getBirthday();
-        try{
-            Date format=new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.US).parse(birthday.toString());
-            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-            formatBirthday = sdf.format(format);
-            age = ageHelper.computeAge(birthday);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+//        computeAgeHelper ageHelper = new computeAgeHelper();
+//        int age = 0;
+//        String formatBirthday = "";
+//        Date birthday = result.getBirthday();
+//        try{
+//            Date format=new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.US).parse(birthday.toString());
+//            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+//            formatBirthday = sdf.format(format);
+//            age = ageHelper.computeAge(birthday);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
         //生成token
         create_token = TokenTools.createToken(username);
+//        return "{\n" +
+//                "    \"data\": {\n" +
+//                "        \"patient_id\": "+ result.getPatientId() +",\n" +
+//                "        \"patient_name\": \""+ result.getPatientName() +"\",\n" +
+//                "        \"patient_user\": \""+ result.getPatientUser()+"\",\n" +
+//                "        \"patient_mobile\": \""+ result.getPatientMobile() +"\",\n" +
+//                "        \"birthday\": \"" + formatBirthday +"\",\n" +
+//                "        \"patient_age\": " + age + ",\n" +
+//                "        \"address\": \""+ result.getAddress() +"\",\n" +
+//                "        \"token\": \""+ create_token+"\"\n" +
+//                "    },\n" +
+//                "    \"meta\": {\n" +
+//                "        \"msg\": \"登录成功\",\n" +
+//                "        \"status\": 200\n" +
+//                "    }\n" +
+//                "}";
         return "{\n" +
                 "    \"data\": {\n" +
                 "        \"patient_id\": "+ result.getPatientId() +",\n" +
-                "        \"patient_name\": \""+ result.getPatientName() +"\",\n" +
-                "        \"patient_user\": \""+ result.getPatientUser()+"\",\n" +
-                "        \"patient_mobile\": \""+ result.getPatientMobile() +"\",\n" +
-                "        \"birthday\": \"" + formatBirthday +"\",\n" +
-                "        \"patient_age\": " + age + ",\n" +
-                "        \"address\": \""+ result.getAddress() +"\",\n" +
                 "        \"token\": \""+ create_token+"\"\n" +
                 "    },\n" +
                 "    \"meta\": {\n" +
@@ -214,18 +236,31 @@ public class UserServiceImpl implements UserService {
         String create_token;
         //生成token
         create_token = TokenTools.createToken(username);
+        //保存token
+        tokenSession tokensession = context.getBean(tokenSession.class);
+        tokensession.setToken(create_token);
         System.out.println(Arrays.toString(result.getDoctorPho()));
+//        return "{\n" +
+//                "    \"data\": {\n" +
+//                "        \"doctor_id\": "+ result.getDoctorId() +",\n" +
+//                "        \"doctor_name\": \"" + result.getDoctorName() + "\",\n" +
+//                "        \"doctor_user\": \"" + result.getDoctorUser() + "\",\n" +
+//                "        \"doctor_intro\": \""+ result.getDoctorIntro() +"\",\n" +
+//                "        \"doctor_email\": \"" + result.getDoctorEmail() + "\",\n" +
+//                "        \"doctor_mobile\": \"" + result.getDoctorMobile() + "\",\n" +
+//                "        \"doctor_tel\": \"" + result.getDoctorTel() + "\",\n" +
+//                "        \"doctor_pho\": \"" + Arrays.toString(result.getDoctorPho()) + "\",\n" +
+//                "        \"department_name\": \""+ result.getDepartmentId() +"\",\n" +
+//                "        \"token\": \"" + create_token + "\",\n" +
+//                "    },\n" +
+//                "    \"meta\": {\n" +
+//                "        \"msg\": \"登录成功\",\n" +
+//                "        \"status\": 200\n" +
+//                "    }\n" +
+//                "}";
         return "{\n" +
                 "    \"data\": {\n" +
                 "        \"doctor_id\": "+ result.getDoctorId() +",\n" +
-                "        \"doctor_name\": \"" + result.getDoctorName() + "\",\n" +
-                "        \"doctor_user\": \"" + result.getDoctorUser() + "\",\n" +
-                "        \"doctor_intro\": \""+ result.getDoctorIntro() +"\",\n" +
-                "        \"doctor_email\": \"" + result.getDoctorEmail() + "\",\n" +
-                "        \"doctor_mobile\": \"" + result.getDoctorMobile() + "\",\n" +
-                "        \"doctor_tel\": \"" + result.getDoctorTel() + "\",\n" +
-                "        \"doctor_pho\": \"" + Arrays.toString(result.getDoctorPho()) + "\",\n" +
-                "        \"department_name\": \""+ result.getDepartmentId() +"\",\n" +
                 "        \"token\": \"" + create_token + "\",\n" +
                 "    },\n" +
                 "    \"meta\": {\n" +

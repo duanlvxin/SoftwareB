@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.example.demo.mapper.RSA_InfoMapper;
 import common.utils.RSA.RSAUtils2;
 import com.example.demo.service.Session.keySession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +17,6 @@ import java.util.Map;
 @EnableAutoConfiguration
 public class RSAControl {
 
-    @Autowired
-    RSA_InfoMapper rsa_infoMapper;
     @Autowired
     ApplicationContext context;
 
