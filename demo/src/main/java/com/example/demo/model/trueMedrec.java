@@ -7,9 +7,17 @@ public class trueMedrec {
 
     private String attendDate;
 
-    private String advice;
-
     private String conditions;
+
+    private String departmentName;
+
+    public String getDepartmentName(){
+        return this.departmentName;
+    }
+
+    public void setDepartmentName(String departmentName){
+        this.departmentName = departmentName;
+    }
 
     public Long getMedrecId() {
         return medrecId;
@@ -35,14 +43,6 @@ public class trueMedrec {
         this.attendDate = attendDate;
     }
 
-    public String getAdvice() {
-        return advice;
-    }
-
-    public void setAdvice(String advice) {
-        this.advice = advice == null ? null : advice.trim();
-    }
-
     public String getConditions() {
         return conditions;
     }
@@ -56,8 +56,8 @@ public class trueMedrec {
         return "{" +
                 "medrecId:" + medrecId +
                 ", doctorName:\"" + doctorName + "\"" +
+                ", departmentName:\"" + departmentName + "\"" +
                 ", attendDate:\"" + attendDate + "\"" +
-                ", advice:\"" + advice + "\"" +
                 ", conditions:\"" + conditions + "\"" +
                 '}';
     }

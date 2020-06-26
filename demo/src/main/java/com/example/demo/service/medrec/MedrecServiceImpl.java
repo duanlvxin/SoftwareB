@@ -1,5 +1,6 @@
 package com.example.demo.service.medrec;
 
+import com.example.demo.mapper.DepartmentMapper;
 import com.example.demo.mapper.DoctorMapper;
 import com.example.demo.mapper.MedrecMapper;
 import com.example.demo.mapper.PatientMapper;
@@ -27,6 +28,9 @@ public class MedrecServiceImpl implements MedrecService {
     @Autowired
     PatientMapper patientMapper;
 
+    @Autowired
+    DepartmentMapper departmentMapper;
+
     @Override
     public String getAllMedrec(Long patient_id){
         try{
@@ -52,8 +56,9 @@ public class MedrecServiceImpl implements MedrecService {
                 trueMedrecItem.setMedrecId(medrec.getMedrecId());
                 //这里需要获取医生名字
                 String doctor_name = doctorMapper.selectByPrimaryKey(medrec.getDoctorId()).getDoctorName();
+                String department_name = departmentMapper.selectByPrimaryKey(doctorMapper.selectByPrimaryKey(medrec.getDoctorId()).getDepartmentId()).getDepartmentName();
                 trueMedrecItem.setDoctorName(doctor_name);
-                trueMedrecItem.setAdvice(medrec.getAdvice());
+                trueMedrecItem.setDepartmentName(department_name);
                 SimpleDateFormat myfmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String attendDate = myfmt.format(medrec.getAttendDate());
                 trueMedrecItem.setAttendDate(attendDate);
@@ -102,6 +107,11 @@ public class MedrecServiceImpl implements MedrecService {
             String patient_name = patientMapper.selectByPrimaryKey(result.getPatientId()).getPatientName();
             String codition = result.getConditions();
             String advice = result.getAdvice();
+            java.util.Date attend_date = result.getAttendDate();
+            SimpleDateFormat myfmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String format_attend_date = myfmt.format(attend_date);
+            String department_name = departmentMapper.selectByPrimaryKey(doctorMapper.selectByPrimaryKey(result.getDoctorId()).getDepartmentId()).getDepartmentName();
+            String doctor_name = doctorMapper.selectByPrimaryKey(result.getDoctorId()).getDoctorName();
             String data = "";
             StringBuilder drugsData = new StringBuilder();
             List<trueDrug> drugs = medrecMapper.getSingleMedrec(medrec_id);
@@ -115,7 +125,10 @@ public class MedrecServiceImpl implements MedrecService {
             return "{\n" +
                     "    \"data\": {\n" +
                     "        \"medrec_id \": " + medrec_id + ",\n" +
+                    "        \"attend_date \": \"" + format_attend_date +"\",\n" +
                     "        \"patient_name\": \""+ patient_name +"\",\n" +
+                    "        \"doctor_name \": \"" + doctor_name +"\",\n" +
+                    "        \"department_name \": \"" + department_name +"\",\n" +
                     "        \"condition\": \""+ codition +"\",\n" +
                     "        \"advice\": \""+ advice +"\",\n" +
                     "        \"drug\":[" + drugsData + "]\n" +
