@@ -19,7 +19,7 @@ public class Reg {
 
     private Integer serialNum;
 
-    private String state;
+    private Integer state;
 
     public Long getRegId() {
         return regId;
@@ -85,11 +85,11 @@ public class Reg {
         this.serialNum = serialNum;
     }
 
-    public String getState() {
+    public Integer getState() {
         return state;
     }
 
-    public void setState(String state) {
-        this.state = state == null ? null : state.trim();
+    public void setState(Integer state) {
+        this.state = state;
     }
 }

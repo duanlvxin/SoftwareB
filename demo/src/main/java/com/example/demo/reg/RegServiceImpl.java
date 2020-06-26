@@ -5,10 +5,13 @@ import com.example.demo.mapper.DoctorMapper;
 import com.example.demo.mapper.RegMapper;
 import com.example.demo.model.Department;
 import com.example.demo.model.Doctor;
+import com.example.demo.model.Patient;
+import com.example.demo.model.Reg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class RegServiceImpl implements RegService {
@@ -22,28 +25,27 @@ public class RegServiceImpl implements RegService {
     @Override
     public String department_list() {
         List<Department> all;
-        all=departmentMapper.selectAllDepartment();
+        all = departmentMapper.selectAllDepartment();
         StringBuilder str = new StringBuilder();
-        for(Department department:all){
+        for (Department department : all) {
             str.append("{\"department_id\":");
             str.append(department.getDepartmentId());
             str.append(",\n\"department_name\":\"");
             str.append(department.getDepartmentName());
             str.append("\"},");
         }
-        str.deleteCharAt(str.length()-1);
+        str.deleteCharAt(str.length() - 1);
         try {
             return "{\n" +
                     "    \"data\": [\n" +
-                         str +
+                    str +
                     "    ],\n" +
                     "    \"meta\": {\n" +
                     "        \"msg\": \"获取科室列表成功\",\n" +
                     "        \"status\": 200\n" +
                     "    }\n" +
                     "}";
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return "{\n" +
                     "    \"data\": [],\n" +
                     "    \"meta\": {\n" +
@@ -60,14 +62,14 @@ public class RegServiceImpl implements RegService {
         System.out.println(department_id);
         List<Doctor> doctors = doctorMapper.selectByDepartmentId(department_id);
         StringBuilder str = new StringBuilder();
-        for(Doctor doctor:doctors){
+        for (Doctor doctor : doctors) {
             str.append("{\"doctor_id\":");
             str.append(doctor.getDoctorId());
             str.append(",\n\"doctor_name\":\"");
             str.append(doctor.getDoctorName());
             str.append("\"},");
         }
-        str.deleteCharAt(str.length()-1);
+        str.deleteCharAt(str.length() - 1);
         try {
             return "{\n" +
                     "    \"data\": [\n" +
@@ -78,8 +80,7 @@ public class RegServiceImpl implements RegService {
                     "        \"status\": 200\n" +
                     "    }\n" +
                     "}";
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return "{\n" +
                     "    \"data\": [],\n" +
                     "    \"meta\": {\n" +
@@ -91,61 +92,103 @@ public class RegServiceImpl implements RegService {
     }
 
     @Override
-    public String doctor_info(Long doctor_id) {
-       return null;
+    public String doctor_info(Long doctor_id, Date res_date) {
+        Doctor doctor = doctorMapper.selectByPrimaryKey(doctor_id);
+        Long department_id = doctor.getDepartmentId();
+        String doctor_name = doctor.getDoctorName();
+        String doctor_username = doctor.getDoctorUser();
+        String doctor_password = doctor.getDoctorPassword();
+        String doctor_intro = doctor.getDoctorIntro();
+        String doctor_email = doctor.getDoctorEmail();
+        String doctor_mobile = doctor.getDoctorMobile();
+        String doctor_tel = doctor.getDoctorTel();
+        Boolean doctor_gender = doctor.getDoctorGender();
+        byte[] doctor_photo = doctor.getDoctorPho();
+        final Base64.Encoder encoder = Base64.getEncoder();
+        final String encoded_photo = "data:image/jpeg;base64," + encoder.encodeToString(doctor_photo);
+        int am_remainder = 5-regMapper.countReserved(doctor_id, res_date, false);
+        int pm_remainder = 5-regMapper.countReserved(doctor_id, res_date, true);
+        try {
+            return "{\n" +
+                    "    \"data\": {\n" +
+                    "        \"department_id\":" + department_id + ",\n" +
+                    "        \"doctor_name\":\"" + doctor_name + "\",\n" +
+                    "        \"doctor_username\":\"" + doctor_username + "\",\n" +
+                    "        \"doctor_password\":\"" + doctor_password + "\",\n" +
+                    "        \"doctor_intro\":\"" + doctor_intro + "\",\n" +
+                    "        \"doctor_email\":\"" + doctor_email + "\",\n" +
+                    "        \"doctor_mobile\":\"" + doctor_mobile + "\",\n" +
+                    "        \"doctor_tel\":\"" + doctor_tel + "\",\n" +
+                    "        \"doctor_gender\":" + doctor_gender + ",\n" +
+                    "        \"doctor_photo\":\"" + encoded_photo + "\",\n" +
+                    "        \"am_remainder\":" + am_remainder + ",\n" +
+                    "        \"pm_remainder\":" + pm_remainder + ",\n" +
+                    "    },\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"获取医生信息成功\",\n" +
+                    "        \"status\": 200\n" +
+                    "    }\n" +
+                    "}";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "{\n" +
+                    "    \"data\": [],\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"获取医生信息失败\",\n" +
+                    "        \"status\": 500\n" +
+                    "    }\n" +
+                    "}";
+        }
     }
 
 
-//    @Override
-//    public String submit(Map<String, String> params) {
-//        String date = params.get("date");
-//        String department = params.get("department");
-//        String doctor_id = params.get("doctor_id");
-//        String period = params.get("period");
-//
-//        Patient patient = new Patient();
-//        patient.setPatientId(null);
-//        patient.setPatientUser(username);
-//        patient.setPatientPassword(password);
-//        patient.setPatientMobile(mobile);
-//        patient.setBirthday(birthday);
-//        patient.setAddress(address);
-//        patient.setPatientName(patient_name);
-//        patient.setPatientGender(patient_gender);
-//        Long patient_id = 0L;
-//        Patient result = patientMapper.selectByUsername(username);
-//        try{
-//            if(result==null){
-//                patientMapper.insert(patient);
-//                patient_id = patientMapper.selectByUsername(username).getPatientId();
-//                return "{\n" +
-//                        "    \"data\": {\n" +
-//                        "        \"patient_id\":"+ patient_id +"\n" +
-//                        "    },\n" +
-//                        "    \"meta\": {\n" +
-//                        "        \"msg\": \"注册成功\",\n" +
-//                        "        \"status\": 201\n" +
-//                        "    }\n" +
-//                        "}";
-//            }
-//            else{
-//                return "{\n" +
-//                        "    \"data\": [],\n" +
-//                        "    \"meta\": {\n" +
-//                        "        \"msg\": \"用户已注册\",\n" +
-//                        "        \"status\": 205\n" +
-//                        "    }\n" +
-//                        "}";
-//            }
-//        }
-//        catch (Exception e){
-//            return "{\n" +
-//                    "    \"data\": [],\n" +
-//                    "    \"meta\": {\n" +
-//                    "        \"msg\": \"注册失败\",\n" +
-//                    "        \"status\": 500\n" +
-//                    "    }\n" +
-//                    "}";
-//        }
-//    }
+    @Override
+    public String reg_submit(Map<String, String> params) {
+        Long patient_id = Long.parseLong(params.get("patient_id"));
+        Long doctor_id = Long.parseLong(params.get("doctor_id"));
+        Date res_date = java.sql.Date.valueOf(params.get("res_date"));
+        Boolean period = Boolean.parseBoolean(params.get("period"));
+
+        Reg reg = new Reg();
+        reg.setRegId(null);
+        reg.setDoctorId(doctor_id);
+        reg.setPatientId(patient_id);
+        Date cur_time = new Date();
+        reg.setRegTime(cur_time);
+        reg.setResDate(res_date);
+        reg.setPeriod(period);
+        reg.setAmount((float) 15.00);
+        reg.setState(0);
+        int reserved = regMapper.countReserved(doctor_id,res_date,period);
+        reg.setSerialNum(reserved+1);
+        Long reg_id = 0L;
+
+
+        try {
+            regMapper.insert(reg);
+            reg_id = regMapper.selectByResDatePeriodSerialNum(res_date,period,reserved+1).getRegId();
+            SimpleDateFormat myfmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String reg_time = myfmt.format(cur_time);
+            return "{\n" +
+                    "    \"data\": {\n" +
+                    "        \"reg_id\":" + reg_id + ",\n" +
+                    "        \"reg_time\":\"" + reg_time + "\",\n" +
+                    "        \"amount\":" + 15.00 + "\n" +
+                    "    },\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"挂号成功\",\n" +
+                    "        \"status\": 201\n" +
+                    "    }\n" +
+                    "}";
+        }catch (Exception e) {
+            e.printStackTrace();
+            return "{\n" +
+                    "    \"data\": [],\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"挂号失败\",\n" +
+                    "        \"status\": 500\n" +
+                    "    }\n" +
+                    "}";
+        }
+    }
 }
