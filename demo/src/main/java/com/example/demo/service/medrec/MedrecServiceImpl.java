@@ -1,20 +1,19 @@
 package com.example.demo.service.medrec;
 
-import com.example.demo.mapper.DepartmentMapper;
-import com.example.demo.mapper.DoctorMapper;
-import com.example.demo.mapper.MedrecMapper;
-import com.example.demo.mapper.PatientMapper;
-import com.example.demo.model.Medrec;
-import com.example.demo.model.Drug;
-import com.example.demo.model.trueDrug;
-import com.example.demo.model.trueMedrec;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.example.demo.mapper.*;
+import com.example.demo.model.*;
+import netscape.javascript.JSObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Service;
 
 import javax.xml.crypto.Data;
-import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MedrecServiceImpl implements MedrecService {
@@ -30,6 +29,12 @@ public class MedrecServiceImpl implements MedrecService {
 
     @Autowired
     DepartmentMapper departmentMapper;
+
+    @Autowired
+    PrescribeMapper prescribeMapper;
+
+    @Autowired
+    RegMapper regMapper;
 
     @Override
     public String getAllMedrec(Long patient_id){
@@ -111,7 +116,12 @@ public class MedrecServiceImpl implements MedrecService {
             SimpleDateFormat myfmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String format_attend_date = myfmt.format(attend_date);
             String department_name = departmentMapper.selectByPrimaryKey(doctorMapper.selectByPrimaryKey(result.getDoctorId()).getDepartmentId()).getDepartmentName();
-            String doctor_name = doctorMapper.selectByPrimaryKey(result.getDoctorId()).getDoctorName();
+
+            Doctor doctor = doctorMapper.selectByPrimaryKey(result.getDoctorId());
+            String doctor_name = doctor.getDoctorName();
+            String doctor_mobile =doctor.getDoctorMobile();
+            String doctor_email = doctor.getDoctorEmail();
+
             String data = "";
             StringBuilder drugsData = new StringBuilder();
             List<trueDrug> drugs = medrecMapper.getSingleMedrec(medrec_id);
@@ -128,6 +138,8 @@ public class MedrecServiceImpl implements MedrecService {
                     "        \"attend_date \": \"" + format_attend_date +"\",\n" +
                     "        \"patient_name\": \""+ patient_name +"\",\n" +
                     "        \"doctor_name \": \"" + doctor_name +"\",\n" +
+                    "        \"doctor_mobile \": \"" + doctor_mobile +"\",\n" +
+                    "        \"doctor_email \": \"" + doctor_email +"\",\n" +
                     "        \"department_name \": \"" + department_name +"\",\n" +
                     "        \"condition\": \""+ codition +"\",\n" +
                     "        \"advice\": \""+ advice +"\",\n" +
@@ -147,5 +159,63 @@ public class MedrecServiceImpl implements MedrecService {
                     "    }\n" +
                     "}";
         }
+    }
+
+    @Override
+    public String addMedrec(JSONObject params){
+        Long patient_id = Long.parseLong(params.get("patient_id").toString());
+        Long doctor_id = Long.parseLong(params.get("doctor_id").toString());
+        String advice = params.get("advice").toString();
+        String condition = params.get("condition").toString();
+
+        //不能用parseArray！！会变成等号
+        JSONArray drugs = params.getJSONArray("drug");
+        Long reg_id = Long.parseLong(params.get("reg_id").toString());
+        java.util.Date date = new Date();// 获取当前时间
+
+        Medrec record = new Medrec();
+        record.setDoctorId(doctor_id);
+        record.setPatientId(patient_id);
+        record.setAdvice(advice);
+        record.setConditions(condition);
+        record.setAttendDate(date);
+        medrecMapper.insert(record);
+
+        //获取插入记录的MedrecId(自增)
+        System.out.println("id:"+record.getMedrecId());
+        Long medrec_id = record.getMedrecId();
+        regMapper.updateState(reg_id,"3");
+
+        for(int i=0;i<drugs.size();i++){
+            JSONObject jsonObject = drugs.getJSONObject(i);
+            Long drug_id = Long.parseLong(jsonObject.get("drug_id").toString());
+            System.out.println(drug_id);
+            int drug_num = Integer.parseInt(jsonObject.get("drug_num").toString());
+            try{
+                Prescribe prescribe = new Prescribe();
+                prescribe.setMedrecId(medrec_id);
+                prescribe.setDrugId(drug_id);
+                prescribe.setDrugNum(drug_num);
+                prescribeMapper.insert(prescribe);
+            }catch (Exception e){
+                e.printStackTrace();
+                return "{\n" +
+                        "    \"meta\": {\n" +
+                        "        \"msg\": \"添加病历失败!\",\n" +
+                        "        \"status\": 500\n" +
+                        "    }\n" +
+                        "}";
+            }
+        }
+
+        return "{\n" +
+                "    \"data\": {\n" +
+                "    \"medrec_id\":"+ medrec_id +
+                "},"+
+                "    \"meta\": {\n" +
+                "        \"msg\": \"添加病历成功!\",\n" +
+                "        \"status\": 200\n" +
+                "    }\n" +
+                "}";
     }
 }

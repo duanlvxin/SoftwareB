@@ -35,6 +35,11 @@ public class RegController {
                 java.sql.Date.valueOf(request.getParameter("res_date"))));
     }
 
+    @RequestMapping(value="api/patient/info", method = RequestMethod.GET)
+    public JSONObject patient_info(HttpServletRequest request){
+        return JSONObject.parseObject(RegService.patient_info(Long.parseLong(request.getParameter("doctor_id"))));
+    }
+
     @RequestMapping(value = "api/patient/reg-submit",method = RequestMethod.POST)
     public JSONObject reg_submit(@RequestBody Map<String, String> params) {
         return JSONObject.parseObject(RegService.reg_submit(params));

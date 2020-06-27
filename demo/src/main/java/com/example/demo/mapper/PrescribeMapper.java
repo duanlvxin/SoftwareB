@@ -13,6 +13,4 @@ public interface PrescribeMapper {
     Prescribe selectByPrimaryKey(PrescribeKey key);
 
     int updateByPrimaryKeySelective(Prescribe record);
-
-    int updateByPrimaryKey(Prescribe record);
 }

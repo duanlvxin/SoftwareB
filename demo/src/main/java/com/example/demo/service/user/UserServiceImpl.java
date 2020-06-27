@@ -6,8 +6,7 @@ import com.example.demo.mapper.PatientMapper;
 import com.example.demo.model.Patient;
 import com.example.demo.service.Session.keySession;
 import com.example.demo.service.Session.tokenSession;
-import common.utils.RSA.RSAUtils2;
-import common.utils.age.computeAgeHelper;
+import common.utils.RSA.RSAUtils;
 import common.utils.token.TokenTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -16,8 +15,6 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 import java.util.Map;
 
 @Service
@@ -47,7 +44,7 @@ public class UserServiceImpl implements UserService {
             keySession keysession = context.getBean(keySession.class);
             String privateKey = keysession.getPrivateKey();
             try{
-                patient.setPatientPassword(RSAUtils2.decryptByPrivateKey(password,privateKey));
+                patient.setPatientPassword(RSAUtils.decryptByPrivateKey(password,privateKey));
             }
             catch (Exception e){
                 return "{\n" +
@@ -108,7 +105,7 @@ public class UserServiceImpl implements UserService {
         String privateKey = keysession.getPrivateKey();
         String decodedPassword = "";
         try{
-            decodedPassword = RSAUtils2.decryptByPrivateKey(password,privateKey);
+            decodedPassword = RSAUtils.decryptByPrivateKey(password,privateKey);
             System.out.println("解密后文字: \r\n" + decodedPassword);
         }catch (Exception e){
             e.printStackTrace();
@@ -156,26 +153,12 @@ public class UserServiceImpl implements UserService {
 //            e.printStackTrace();
 //        }
         //生成token
-        create_token = TokenTools.createToken(username);
-//        return "{\n" +
-//                "    \"data\": {\n" +
-//                "        \"patient_id\": "+ result.getPatientId() +",\n" +
-//                "        \"patient_name\": \""+ result.getPatientName() +"\",\n" +
-//                "        \"patient_user\": \""+ result.getPatientUser()+"\",\n" +
-//                "        \"patient_mobile\": \""+ result.getPatientMobile() +"\",\n" +
-//                "        \"birthday\": \"" + formatBirthday +"\",\n" +
-//                "        \"patient_age\": " + age + ",\n" +
-//                "        \"address\": \""+ result.getAddress() +"\",\n" +
-//                "        \"token\": \""+ create_token+"\"\n" +
-//                "    },\n" +
-//                "    \"meta\": {\n" +
-//                "        \"msg\": \"登录成功\",\n" +
-//                "        \"status\": 200\n" +
-//                "    }\n" +
-//                "}";
+        TokenTools tokenTools = new TokenTools();
+        create_token = tokenTools.generateToken(result.getPatientId().toString());
         return "{\n" +
                 "    \"data\": {\n" +
                 "        \"patient_id\": "+ result.getPatientId() +",\n" +
+                "        \"patient_name\": \""+ result.getPatientName() +"\",\n" +
                 "        \"token\": \""+ create_token+"\"\n" +
                 "    },\n" +
                 "    \"meta\": {\n" +
@@ -194,7 +177,7 @@ public class UserServiceImpl implements UserService {
         String privateKey = keysession.getPrivateKey();
         String decodedPassword = "";
         try{
-            decodedPassword = RSAUtils2.decryptByPrivateKey(password,privateKey);
+            decodedPassword = RSAUtils.decryptByPrivateKey(password,privateKey);
             System.out.println("解密后文字: \r\n" + decodedPassword);
         }catch (Exception e){
             e.printStackTrace();
@@ -235,29 +218,12 @@ public class UserServiceImpl implements UserService {
 
         String create_token;
         //生成token
-        create_token = TokenTools.createToken(username);
+        TokenTools tokenTools = new TokenTools();
+        create_token = tokenTools.generateToken(result.getDoctorId().toString());
         //保存token
         tokenSession tokensession = context.getBean(tokenSession.class);
         tokensession.setToken(create_token);
         System.out.println(Arrays.toString(result.getDoctorPho()));
-//        return "{\n" +
-//                "    \"data\": {\n" +
-//                "        \"doctor_id\": "+ result.getDoctorId() +",\n" +
-//                "        \"doctor_name\": \"" + result.getDoctorName() + "\",\n" +
-//                "        \"doctor_user\": \"" + result.getDoctorUser() + "\",\n" +
-//                "        \"doctor_intro\": \""+ result.getDoctorIntro() +"\",\n" +
-//                "        \"doctor_email\": \"" + result.getDoctorEmail() + "\",\n" +
-//                "        \"doctor_mobile\": \"" + result.getDoctorMobile() + "\",\n" +
-//                "        \"doctor_tel\": \"" + result.getDoctorTel() + "\",\n" +
-//                "        \"doctor_pho\": \"" + Arrays.toString(result.getDoctorPho()) + "\",\n" +
-//                "        \"department_name\": \""+ result.getDepartmentId() +"\",\n" +
-//                "        \"token\": \"" + create_token + "\",\n" +
-//                "    },\n" +
-//                "    \"meta\": {\n" +
-//                "        \"msg\": \"登录成功\",\n" +
-//                "        \"status\": 200\n" +
-//                "    }\n" +
-//                "}";
         return "{\n" +
                 "    \"data\": {\n" +
                 "        \"doctor_id\": "+ result.getDoctorId() +",\n" +
@@ -268,11 +234,5 @@ public class UserServiceImpl implements UserService {
                 "        \"status\": 200\n" +
                 "    }\n" +
                 "}";
-    }
-
-    @Override
-    public String patient_info(HttpServletRequest request){
-        Long doctor_id = Long.parseLong(request.getParameter("doctor_id"));
-        return "{\"data\":\"hhh\"}";
     }
 }

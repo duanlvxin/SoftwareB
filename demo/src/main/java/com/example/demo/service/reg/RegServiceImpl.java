@@ -6,6 +6,7 @@ import com.example.demo.mapper.RegMapper;
 import com.example.demo.model.Department;
 import com.example.demo.model.Doctor;
 import com.example.demo.model.Reg;
+import com.example.demo.model.patientInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -134,6 +135,64 @@ public class RegServiceImpl implements com.example.demo.reg.RegService {
                     "    \"data\": [],\n" +
                     "    \"meta\": {\n" +
                     "        \"msg\": \"获取医生信息失败\",\n" +
+                    "        \"status\": 500\n" +
+                    "    }\n" +
+                    "}";
+        }
+    }
+
+    @Override
+    public String patient_info(Long doctor_id){
+        SimpleDateFormat sdf = new SimpleDateFormat();// 格式化时间
+        sdf.applyPattern("yyyy-MM-dd HH:mm:ss a");// a为am/pm的标记
+        Date date = new Date();// 获取当前时间
+        String formate_date =  sdf.format(date);
+        String true_date = formate_date.substring(0,10);
+        String period = formate_date.substring(11,19);
+        System.out.println(period);
+        if(period.compareTo("08:00:00")<0 || (period.compareTo("12:00:00")>0 && period.compareTo("14:00:00")<0) ||
+        period.compareTo("17:00:00")>0){
+            return "{\n" +
+                    "    \"data\": [],\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"不在有效工作时间内,无权查看！\",\n" +
+                    "        \"status\": 404\n" +
+                    "    }\n" +
+                    "}";
+        }
+
+
+        int period_code = 1;
+        if(period.compareTo("12:00:00")<=0){
+            period_code = 0;
+        }
+        try{
+            patientInfo result = regMapper.getRegPatientInfo(doctor_id,true_date,period_code);
+            if(result==null){
+                return "{\n" +
+                        "    \"data\": [],\n" +
+                        "    \"meta\": {\n" +
+                        "        \"msg\": \"暂无挂号病人\",\n" +
+                        "        \"status\": 404\n" +
+                        "    }\n" +
+                        "}";
+            }
+            else{
+                regMapper.updateState(result.getReg_id(),"2");
+                return "{\n" +
+                        "    \"data\":" + result.toString() +",\n" +
+                        "    \"meta\": {\n" +
+                        "        \"msg\": \"获取挂号病人信息成功\",\n" +
+                        "        \"status\": 200\n" +
+                        "    }\n" +
+                        "}";
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return "{\n" +
+                    "    \"data\": [],\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"获取挂号病人信息失败\",\n" +
                     "        \"status\": 500\n" +
                     "    }\n" +
                     "}";

@@ -16,7 +16,7 @@
     reg_id, doctor_id, patient_id, reg_time, res_date, period, amount, serial_num, state
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from reg
     where reg_id = #{regId,jdbcType=BIGINT}
@@ -26,12 +26,12 @@
     where reg_id = #{regId,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.example.demo.model.Reg">
-    insert into reg (reg_id, doctor_id, patient_id, 
-      reg_time, res_date, period, 
+    insert into reg (reg_id, doctor_id, patient_id,
+      reg_time, res_date, period,
       amount, serial_num, state
       )
-    values (#{regId,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT}, #{patientId,jdbcType=BIGINT}, 
-      #{regTime,jdbcType=TIMESTAMP}, #{resDate,jdbcType=DATE}, #{period,jdbcType=BIT}, 
+    values (#{regId,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT}, #{patientId,jdbcType=BIGINT},
+      #{regTime,jdbcType=TIMESTAMP}, #{resDate,jdbcType=DATE}, #{period,jdbcType=BIT},
       #{amount,jdbcType=REAL}, #{serialNum,jdbcType=INTEGER}, #{state,jdbcType=INTEGER}
       )
   </insert>

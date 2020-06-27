@@ -22,7 +22,7 @@
     delete from medrec
     where medrec_id = #{medrecId,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.example.demo.model.Medrec" >
+  <insert id="insert" useGeneratedKeys="true" keyProperty="medrecId" parameterType="com.example.demo.model.Medrec" >
     insert into medrec (medrec_id, doctor_id, patient_id, 
       attend_date, advice, conditions
       )

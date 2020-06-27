@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import common.utils.RSA.RSAUtils2;
+import common.utils.RSA.RSAUtils;
 import com.example.demo.service.Session.keySession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -63,9 +63,9 @@ public class RSAControl {
         if (keysession.getPrivateKey() == null) {
             try {
                 // 获取公钥和私钥
-                java.security.KeyPair keypair = RSAUtils2.initKey();
-                setPublicKey(RSAUtils2.getPublicKey(keypair));
-                setPrivateKey(RSAUtils2.getPrivateKey(keypair));
+                java.security.KeyPair keypair = RSAUtils.initKey();
+                setPublicKey(RSAUtils.getPublicKey(keypair));
+                setPrivateKey(RSAUtils.getPrivateKey(keypair));
 
 //                request.getSession().setAttribute("publicKey", getPublicKey());
 //                request.getSession().setAttribute("privateKey", getPrivateKey());
