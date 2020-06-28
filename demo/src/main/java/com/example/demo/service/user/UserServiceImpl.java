@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 
@@ -175,6 +176,7 @@ public class UserServiceImpl implements UserService {
 
         keySession keysession = context.getBean(keySession.class);
         String privateKey = keysession.getPrivateKey();
+        //String decodedPassword = password;
         String decodedPassword = "";
         try{
             decodedPassword = RSAUtils.decryptByPrivateKey(password,privateKey);
@@ -234,5 +236,87 @@ public class UserServiceImpl implements UserService {
                 "        \"status\": 200\n" +
                 "    }\n" +
                 "}";
+    }
+
+    @Override
+    public String doctor_modify_password(Map<String, String> params) {
+        Long doctor_id = Long.parseLong(params.get("doctor_id"));
+        String password = params.get("password");
+        //解密
+//        String decodedPassword = password;
+        keySession keysession = context.getBean(keySession.class);
+        String privateKey = keysession.getPrivateKey();
+        String decodedPassword = "";
+        try{
+            decodedPassword = RSAUtils.decryptByPrivateKey(password,privateKey);
+            System.out.println("解密后文字: \r\n" + decodedPassword);
+        }catch (Exception e){
+            e.printStackTrace();
+            return "{\n" +
+                    "    \"data\": [],\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"解密失败\",\n" +
+                    "        \"status\": 500\n" +
+                    "    }\n" +
+                    "}";
+        }
+
+        try{
+            doctorMapper.updatePassword(doctor_id,decodedPassword);
+            return "{\n" +
+                    "    \"data\":{\n" +
+                    "        \"doctor_id\":"+ doctor_id +"\n" +
+                    "    },\n" +
+                    "    \"meta\":{\n" +
+                    "        \"msg\": \"修改成功\",\n" +
+                    "        \"status\": 200\n" +
+                    "    }\n" +
+                    "}";
+        }catch (Exception e){
+            e.printStackTrace();
+            return "{\n" +
+                    "    \"data\": [],\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"修改密码失败！\",\n" +
+                    "        \"status\": 500\n" +
+                    "    }\n" +
+                    "}";
+        }
+
+    }
+
+    @Override
+    public String doctor_modify_info(Map<String, String> params) {
+        Long doctor_id = Long.parseLong(params.get("doctor_id"));
+        String doctor_email = params.get("doctor_email");
+        String doctor_mobile = params.get("doctor_mobile");
+        String doctor_intro = params.get("doctor_intro");
+
+        final Base64.Decoder decoder = Base64.getDecoder();
+        String doctor_pho = params.get("doctor_pho");
+        byte[] save_doctor_pho = decoder.decode(doctor_pho);
+
+        try {
+            doctorMapper.updateInfo(doctor_id, doctor_email, doctor_mobile, doctor_intro, save_doctor_pho);
+            return "{\n" +
+                    "    \"data\":{\n" +
+                    "        \"doctor_id\":" + doctor_id + "\n" +
+                    "    },\n" +
+                    "    \"meta\":{\n" +
+                    "        \"msg\": \"修改成功\",\n" +
+                    "        \"status\": 200\n" +
+                    "    }\n" +
+                    "}";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "{\n" +
+                    "    \"data\": [],\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"修改个人信息失败！\",\n" +
+                    "        \"status\": 500\n" +
+                    "    }\n"+
+                    "}";
+
+        }
     }
 }

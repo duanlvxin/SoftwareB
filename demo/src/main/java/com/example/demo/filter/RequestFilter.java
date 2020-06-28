@@ -50,14 +50,14 @@ public class RequestFilter implements Filter {
                 // Access-Control-Allow-Methods是允许的请求方式
 //                response.setHeader("Access-Control-Allow-Origin", "*");// *,任何域名
 //                response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE");
-                // response.setHeader("Access-Control-Allow-Headers", "Origin,X-Requested-With,Content-Type, Accept");
+//                response.setHeader("Access-Control-Allow-Headers", "Origin,X-Requested-With,Content-Type, Accept");
                 // 允许请求头Token
                 // httpResponse.setHeader("Access-Control-Allow-Headers","Origin,X-Requested-With, Content-Type, Accept, Token");
                 // 允许客户端，发一个新的请求头jwt
 //                response.setHeader("Access-Control-Allow-Headers", "Origin,X-Requested-With, Content-Type, Accept, jwt");
                 // 允许客户端，处理一个新的响应头jwt
 //                response.setHeader("Access-Control-Expose-Headers", "jwt");
-                response.setHeader("access_token", refreshedToken);
+                response.setHeader("Authorization", refreshedToken);
             }
             filterChain.doFilter(request, response);
             return;
@@ -67,8 +67,8 @@ public class RequestFilter implements Filter {
 
     /**
      * @description: 向客户端返回响应信息（json格式）
-     * @author wangdong
-     * @date 2019/10/8 16:46
+     * @author
+     * @date
      */
     private void outputStream(ServletResponse servletResponse,String message){
         try{

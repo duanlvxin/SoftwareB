@@ -7,4 +7,6 @@ public interface UserService {
     String register(Map<String, String> params);
     String patient_login(Map<String, String> params,HttpServletRequest request);
     String doctor_login(Map<String, String> params);
+    String doctor_modify_password(Map<String, String> params);
+    String doctor_modify_info(Map<String, String> params);
 }

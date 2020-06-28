@@ -19,16 +19,19 @@ public class MedrecControl {
     @Autowired
     MedrecServiceImpl medrecService = new MedrecServiceImpl();
 
+    //获取所有病历
     @RequestMapping(value = "api/patient/all-medrec", method = RequestMethod.GET)
     public JSONObject getAllMedrec(HttpServletRequest request) {
         return JSONObject.parseObject(medrecService.getAllMedrec(Long.parseLong(request.getParameter("patient_id"))));
     }
 
+    //获取单个病历
     @RequestMapping(value = "api/patient/single-medrec", method = RequestMethod.GET)
     public JSONObject getSingleMedrec(HttpServletRequest request) {
         return JSONObject.parseObject(medrecService.getSingleMedrec(Long.parseLong(request.getParameter("medrec_id"))));
     }
 
+    //医生添加病历
     @RequestMapping(value = "api/doctor/add-medrec", method = RequestMethod.POST)
     public JSONObject addMedrec(@RequestBody JSONObject params) {
         return JSONObject.parseObject(medrecService.addMedrec(params));
