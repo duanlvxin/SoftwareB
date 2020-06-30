@@ -66,6 +66,7 @@ public class patientInfo {
     @Override
     public String toString(){
         String truePatientGender = patient_gender==1?"男":"女";
+        address = address==null?"":address;
         computeAgeHelper ageHelper = new computeAgeHelper();
         int age = 0;
         String formatBirthday = "";

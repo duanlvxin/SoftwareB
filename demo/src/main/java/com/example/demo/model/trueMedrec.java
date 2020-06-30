@@ -53,12 +53,13 @@ public class trueMedrec {
 
     @Override
     public String toString() {
+        conditions = conditions==null?"":conditions;
         return "{" +
-                "medrecId:" + medrecId +
-                ", doctorName:\"" + doctorName + "\"" +
-                ", departmentName:\"" + departmentName + "\"" +
-                ", attendDate:\"" + attendDate + "\"" +
-                ", conditions:\"" + conditions + "\"" +
+                " medrec_id:" + medrecId +
+                ", doctor_name:\"" + doctorName + "\"" +
+                ", department_name:\"" + departmentName + "\"" +
+                ", attend_date:\"" + attendDate + "\"" +
+                ", condition:\"" + conditions + "\"" +
                 '}';
     }
 }

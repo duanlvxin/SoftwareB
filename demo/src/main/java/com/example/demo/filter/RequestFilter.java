@@ -21,7 +21,8 @@ import java.io.IOException;
 @WebFilter(filterName = "request", urlPatterns =
         {"/api/patient/single-medrec","/api/patient/all-medrec","/api/patient/department-list",
         "/api/patient/doctor-list","/api/patient/doctor-info","/api/patient/reg-submit",
-        "/api/patient/info","/api/doctor/add-medrec"})
+        "/api/doctor/patient-info","/api/doctor/doctor-info","/api/doctor/add-medrec","/api/doctor/modify-password",
+                "/api/doctor/modify-info"})
 public class RequestFilter implements Filter {
 
     private TokenTools tokenTools = new TokenTools();

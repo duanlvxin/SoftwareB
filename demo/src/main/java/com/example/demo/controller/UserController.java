@@ -40,13 +40,13 @@ public class UserController {
     }
 
     //医生修改密码
-    @RequestMapping(value="api/docter/modify-password",method = RequestMethod.POST)
+    @RequestMapping(value="api/doctor/modify-password",method = RequestMethod.POST)
     public JSONObject doctor_modify_password(@RequestBody Map<String,String> params){
         return JSONObject.parseObject(userService.doctor_modify_password(params));
     }
 
     //医生修改个人信息
-    @RequestMapping(value="api/docter/modify-info",method = RequestMethod.POST)
+    @RequestMapping(value="api/doctor/modify-info",method = RequestMethod.POST)
     public JSONObject doctor_modify_info(@RequestBody Map<String,String> params){
         return JSONObject.parseObject(userService.doctor_modify_info(params));
     }

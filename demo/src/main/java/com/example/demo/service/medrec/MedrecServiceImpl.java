@@ -4,16 +4,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.mapper.*;
 import com.example.demo.model.*;
-import netscape.javascript.JSObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Service;
 
-import javax.xml.crypto.Data;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class MedrecServiceImpl implements MedrecService {
@@ -40,7 +36,6 @@ public class MedrecServiceImpl implements MedrecService {
     public String getAllMedrec(Long patient_id){
         try{
             List<Medrec> result = medrecMapper.selectByPatientId(patient_id);
-            String data = "";
             if(result.size()==0){
                 return "{\n" +
                         "    \"data\": {\n" +
@@ -163,14 +158,15 @@ public class MedrecServiceImpl implements MedrecService {
 
     @Override
     public String addMedrec(JSONObject params){
-        Long patient_id = Long.parseLong(params.get("patient_id").toString());
-        Long doctor_id = Long.parseLong(params.get("doctor_id").toString());
         String advice = params.get("advice").toString();
         String condition = params.get("condition").toString();
 
         //不能用parseArray！！会变成等号
         JSONArray drugs = params.getJSONArray("drug");
         Long reg_id = Long.parseLong(params.get("reg_id").toString());
+        Reg reg = regMapper.selectByPrimaryKey(reg_id);
+        Long patient_id = reg.getPatientId();
+        Long doctor_id = reg.getDoctorId();
         java.util.Date date = new Date();// 获取当前时间
 
         Medrec record = new Medrec();
@@ -184,7 +180,7 @@ public class MedrecServiceImpl implements MedrecService {
         //获取插入记录的MedrecId(自增)
         System.out.println("id:"+record.getMedrecId());
         Long medrec_id = record.getMedrecId();
-        regMapper.updateState(reg_id,"3");
+        regMapper.updateState(reg_id,4);
 
         for(int i=0;i<drugs.size();i++){
             JSONObject jsonObject = drugs.getJSONObject(i);
