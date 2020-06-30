@@ -1,7 +1,7 @@
 package com.example.demo.service.userinfo;
 
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 public interface UserinfoService {
-    String checkPassword(Map<String,String> params);
+    String checkPassword(HttpServletRequest request);
 }

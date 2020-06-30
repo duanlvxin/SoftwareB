@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class UserinfoServiceImpl implements UserinfoService {
@@ -18,9 +18,9 @@ public class UserinfoServiceImpl implements UserinfoService {
     ApplicationContext context;
 
     //检查旧密码是否正确
-    public String checkPassword(Map<String,String> params){
-        Long doctor_id = Long.parseLong(params.get("doctor_id"));
-        String password = params.get("doctor_password");
+    public String checkPassword(HttpServletRequest request){
+        Long doctor_id = Long.parseLong(request.getParameter("doctor_id"));
+        String password = request.getParameter("doctor_password");
 
         //解密
         keySession keysession = context.getBean(keySession.class);

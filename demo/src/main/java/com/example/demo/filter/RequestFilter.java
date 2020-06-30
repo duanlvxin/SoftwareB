@@ -2,7 +2,6 @@ package com.example.demo.filter;
 
 import common.utils.status.TokenStatus;
 import common.utils.token.TokenTools;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -19,7 +18,7 @@ import java.io.IOException;
  **/
 
 @WebFilter(filterName = "request", urlPatterns =
-        {"/api/patient/single-medrec","/api/patient/all-medrec","/api/patient/department-list",
+        {"/api/patient/single-medrec","/api/patient/all-medrec",
         "/api/patient/doctor-list","/api/patient/doctor-info","/api/patient/reg-submit",
         "/api/doctor/patient-info","/api/doctor/doctor-info","/api/doctor/add-medrec","/api/doctor/modify-password",
                 "/api/doctor/modify-info","/api/doctor/patient-late" ,"/api/patient/reg-list","/api/doctor/drug-list"})

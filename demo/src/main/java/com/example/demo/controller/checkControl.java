@@ -1,8 +1,6 @@
 package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.example.demo.service.reg.RegServiceImpl;
-import com.example.demo.service.userinfo.UserinfoService;
 import com.example.demo.service.userinfo.UserinfoServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -21,9 +19,9 @@ public class checkControl {
     @Autowired
     UserinfoServiceImpl userinfoService = new UserinfoServiceImpl();
 
-    //获取所有病历
-    @RequestMapping(value = "api/doctor/check-password", method = RequestMethod.POST)
-    public JSONObject getAllMedrec(@RequestBody Map<String,String> params) {
-        return JSONObject.parseObject(userinfoService.checkPassword(params));
+    //check
+    @RequestMapping(value = "api/doctor/check-password", method = RequestMethod.GET)
+    public JSONObject checkPassword(HttpServletRequest request) {
+        return JSONObject.parseObject(userinfoService.checkPassword(request));
     }
 }

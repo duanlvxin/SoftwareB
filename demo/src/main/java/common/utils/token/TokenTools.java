@@ -18,7 +18,7 @@ public class TokenTools {
     /**加密秘钥*/
     private String secret = "a1g2y47dg3dj59fjhhsd7cnewy73j";
     /**设置有效时间，为30秒*/
-    private long expiration = (long) 30 * 60 * 1000;
+    private long expiration = (long) 60 * 60 * 1000;
 
     /**
      * 初始化生成token的参数

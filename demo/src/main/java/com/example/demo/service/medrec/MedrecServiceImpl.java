@@ -39,8 +39,8 @@ public class MedrecServiceImpl implements MedrecService {
             if(result.size()==0){
                 return "{\n" +
                         "    \"data\": {\n" +
-                        "        \" patient_id \": " + patient_id + ",\n" +
-                        "        \" medrec\":[\n" +
+                        "        \"patient_id\": " + patient_id + ",\n" +
+                        "        \"medrec\":[\n" +
                         "        ]\n" +
                         "    },\n" +
                         "    \"meta\": {\n" +
@@ -71,8 +71,8 @@ public class MedrecServiceImpl implements MedrecService {
             System.out.println(medrecData);
             return "{\n" +
                     "    \"data\": {\n" +
-                    "        \" patient_id \": " + patient_id + ",\n" +
-                    "        \" medrec\":[" + medrecData + "]\n" +
+                    "        \"patient_id \": " + patient_id + ",\n" +
+                    "        \"medrec\":[" + medrecData + "]\n" +
                     "    },\n" +
                     "    \"meta\": {\n" +
                     "        \"msg\": \"获取成功\",\n" +

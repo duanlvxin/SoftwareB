@@ -240,7 +240,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String doctor_modify_password(Map<String, String> params) {
         Long doctor_id = Long.parseLong(params.get("doctor_id"));
-        String password = params.get("password");
+        String password = params.get("doctor_password");
         //解密
 //        String decodedPassword = password;
         keySession keysession = context.getBean(keySession.class);
@@ -293,10 +293,15 @@ public class UserServiceImpl implements UserService {
 
         final Base64.Decoder decoder = Base64.getDecoder();
         String doctor_pho = params.get("doctor_pho");
+        System.out.println("pho:"+doctor_pho);
         byte[] save_doctor_pho = decoder.decode(doctor_pho);
 
         try {
+            if(doctor_pho.length()==0){
+                 save_doctor_pho = doctorMapper.selectByPrimaryKey(doctor_id).getDoctorPho();
+            }
             doctorMapper.updateInfo(doctor_id, doctor_email, doctor_mobile, doctor_intro, save_doctor_pho);
+
             return "{\n" +
                     "    \"data\":{\n" +
                     "        \"doctor_id\":" + doctor_id + "\n" +
