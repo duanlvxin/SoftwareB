@@ -7,20 +7,25 @@ import com.example.demo.model.Department;
 import com.example.demo.model.Doctor;
 import com.example.demo.model.Reg;
 import com.example.demo.model.patientInfo;
+import com.example.demo.service.Session.keySession;
+import common.utils.RSA.RSAUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
-public class RegServiceImpl implements com.example.demo.reg.RegService {
+public class RegServiceImpl implements RegService {
     @Autowired
     RegMapper regMapper;
     @Autowired
     DepartmentMapper departmentMapper;
     @Autowired
     DoctorMapper doctorMapper;
+    @Autowired
+    ApplicationContext context;
 
     @Override
     public String department_list() {
@@ -150,16 +155,16 @@ public class RegServiceImpl implements com.example.demo.reg.RegService {
         String true_date = formate_date.substring(0,10);
         String period = formate_date.substring(11,19);
         System.out.println(period);
-        if(period.compareTo("08:00:00")<0 || (period.compareTo("12:00:00")>0 && period.compareTo("14:00:00")<0) ||
-        period.compareTo("17:00:00")>0){
-            return "{\n" +
-                    "    \"data\": [],\n" +
-                    "    \"meta\": {\n" +
-                    "        \"msg\": \"不在有效工作时间内,无权查看！\",\n" +
-                    "        \"status\": 404\n" +
-                    "    }\n" +
-                    "}";
-        }
+//        if(period.compareTo("08:00:00")<0 || (period.compareTo("12:00:00")>0 && period.compareTo("14:00:00")<0) ||
+//        period.compareTo("17:00:00")>0){
+//            return "{\n" +
+//                    "    \"data\": [],\n" +
+//                    "    \"meta\": {\n" +
+//                    "        \"msg\": \"不在有效工作时间内,无权查看！\",\n" +
+//                    "        \"status\": 404\n" +
+//                    "    }\n" +
+//                    "}";
+//        }
 
 
         int period_code = 1;
@@ -167,7 +172,10 @@ public class RegServiceImpl implements com.example.demo.reg.RegService {
             period_code = 0;
         }
         try{
-            patientInfo result = regMapper.getRegPatientInfo(doctor_id,true_date,period_code);
+            patientInfo result = regMapper.getRegPatientInfo(doctor_id,true_date,period_code,3);
+            if(result==null){
+                result = regMapper.getRegPatientInfo(doctor_id,true_date,period_code,2);
+            }
             if(result==null){
                 return "{\n" +
                         "    \"data\": [],\n" +
@@ -178,7 +186,7 @@ public class RegServiceImpl implements com.example.demo.reg.RegService {
                         "}";
             }
             else{
-                regMapper.updateState(result.getReg_id(),"2");
+                regMapper.updateState(result.getReg_id(),3);
                 return "{\n" +
                         "    \"data\":" + result.toString() +",\n" +
                         "    \"meta\": {\n" +
@@ -244,6 +252,46 @@ public class RegServiceImpl implements com.example.demo.reg.RegService {
                     "    \"data\": [],\n" +
                     "    \"meta\": {\n" +
                     "        \"msg\": \"挂号失败\",\n" +
+                    "        \"status\": 500\n" +
+                    "    }\n" +
+                    "}";
+        }
+    }
+
+    @Override
+    public String full_doctor_info(Long doctor_id){
+        try{
+            Doctor doctor = doctorMapper.selectByPrimaryKey(doctor_id);
+//            String doctor_password = doctor.getDoctorPassword();
+//            keySession keysession = context.getBean(keySession.class);
+//            String publicKey = keysession.getPublicKey();
+//            if(publicKey==null){
+//                return "{\n" +
+//                        "    \"data\": [],\n" +
+//                        "    \"meta\": {\n" +
+//                        "        \"msg\": \"请先获取公钥！\",\n" +
+//                        "        \"status\": 500\n" +
+//                        "    }\n" +
+//                        "}";
+//            }
+//            String encoded_password = RSAUtils.encryptByPublicKey(doctor_password,publicKey);
+            String department_name = departmentMapper.selectByPrimaryKey(doctor.getDepartmentId()).getDepartmentName();
+//            doctor.setDoctorPassword(encoded_password);
+            doctor.setDepartmentName(department_name);
+            return "{\n" +
+                    "    \"data\":\n" + doctor.toString() +
+                    ",\n" +
+                    "\t\"meta\":{\n" +
+                    "    \t\"msg\": \"获取成功\",\n" +
+                    "    \t\"status\": 200\n" +
+                    "\t}\n" +
+                    "}";
+        }catch (Exception e){
+            e.printStackTrace();
+            return "{\n" +
+                    "    \"data\": [],\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"获取医生信息失败\",\n" +
                     "        \"status\": 500\n" +
                     "    }\n" +
                     "}";

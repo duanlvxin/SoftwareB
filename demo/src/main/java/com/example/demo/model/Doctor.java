@@ -1,9 +1,12 @@
 package com.example.demo.model;
 
+import java.util.Base64;
+
 public class Doctor {
     private Long doctorId;
 
     private Long departmentId;
+    private String departmentName;
 
     private String doctorName;
 
@@ -37,6 +40,14 @@ public class Doctor {
 
     public void setDepartmentId(Long departmentId) {
         this.departmentId = departmentId;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 
     public String getDoctorName() {
@@ -109,5 +120,29 @@ public class Doctor {
 
     public void setDoctorPho(byte[] doctorPho) {
         this.doctorPho = doctorPho;
+    }
+
+    @Override
+    public String toString(){
+        String doctor_gender = doctorGender ? "男" : "女";
+        doctorIntro = doctorIntro==null?"":doctorIntro;
+        String encoded_photo = "";
+        if (doctorPho != null) {
+            final Base64.Encoder encoder = Base64.getEncoder();
+            encoded_photo = "data:image/jpeg;base64," + encoder.encodeToString(doctorPho);
+        }
+        return "{\n" +
+                "        \"doctor_id\":"+ doctorId +",\n" +
+                "        \"doctor_name\":\""+ doctorName +"\",\n" +
+                "        \"doctor_user\":\""+ doctorUser +"\",\n" +
+                "        \"doctor_password\":\""+ doctorPassword +"\",\n" +
+                "        \"department_name\":\"" + departmentName + "\",\n" +
+                "        \"doctor_email\":\""+ doctorEmail +"\",\n" +
+                "        \"doctor_mobile\":\"" + doctorMobile +"\",\n" +
+                "        \"doctor_tel\":\""+ doctorTel +"\",\n" +
+                "        \"doctor_gender\":\""+ doctor_gender + "\",\n" +
+                "        \"doctor_intro\":\""+ doctorIntro +"\",\n" +
+                "        \"doctor_pho\":\""+ encoded_photo +"\"\n" +
+                "\t}";
     }
 }

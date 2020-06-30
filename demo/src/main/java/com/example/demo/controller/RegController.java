@@ -35,6 +35,12 @@ public class RegController {
                 java.sql.Date.valueOf(request.getParameter("res_date"))));
     }
 
+    @RequestMapping(value = "api/doctor/doctor-info",method = RequestMethod.GET)
+    public JSONObject full_doctor_info(HttpServletRequest request) {
+        return JSONObject.parseObject(RegService.full_doctor_info(Long.parseLong(request.getParameter("doctor_id"))));
+    }
+
+    //获取挂号病人信息
     @RequestMapping(value="api/doctor/patient-info", method = RequestMethod.GET)
     public JSONObject patient_info(HttpServletRequest request){
         return JSONObject.parseObject(RegService.patient_info(Long.parseLong(request.getParameter("doctor_id"))));
