@@ -43,6 +43,7 @@ public class trueDrug {
 
     @Override
     public String toString() {
+        drug_specification = drug_specification==null?"":drug_specification;
         return "{" +
                 "drug_id:" + drug_id +
                 ", drug_name:\"" + drug_name + "\"" +

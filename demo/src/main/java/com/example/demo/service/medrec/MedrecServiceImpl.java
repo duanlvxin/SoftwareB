@@ -105,8 +105,8 @@ public class MedrecServiceImpl implements MedrecService {
                         "}";
             }
             String patient_name = patientMapper.selectByPrimaryKey(result.getPatientId()).getPatientName();
-            String codition = result.getConditions();
-            String advice = result.getAdvice();
+            String codition = result.getConditions()==null?"":result.getConditions();
+            String advice = result.getAdvice()==null?"":result.getAdvice();
             java.util.Date attend_date = result.getAttendDate();
             SimpleDateFormat myfmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String format_attend_date = myfmt.format(attend_date);
@@ -114,8 +114,8 @@ public class MedrecServiceImpl implements MedrecService {
 
             Doctor doctor = doctorMapper.selectByPrimaryKey(result.getDoctorId());
             String doctor_name = doctor.getDoctorName();
-            String doctor_mobile =doctor.getDoctorMobile();
-            String doctor_email = doctor.getDoctorEmail();
+            String doctor_mobile =doctor.getDoctorMobile()==null?"":doctor.getDoctorMobile();
+            String doctor_email = doctor.getDoctorEmail()==null?"":doctor.getDoctorEmail();
 
             String data = "";
             StringBuilder drugsData = new StringBuilder();
@@ -128,16 +128,16 @@ public class MedrecServiceImpl implements MedrecService {
             System.out.println("drugsData:"+drugsData);
             drugsData.delete(drugsData.length()-1,drugsData.length());
             return "{\n" +
-                    "    \"data\": {\n" +
-                    "        \"medrec_id \": " + medrec_id + ",\n" +
-                    "        \"attend_date \": \"" + format_attend_date +"\",\n" +
-                    "        \"patient_name\": \""+ patient_name +"\",\n" +
-                    "        \"doctor_name \": \"" + doctor_name +"\",\n" +
-                    "        \"doctor_mobile \": \"" + doctor_mobile +"\",\n" +
-                    "        \"doctor_email \": \"" + doctor_email +"\",\n" +
-                    "        \"department_name \": \"" + department_name +"\",\n" +
-                    "        \"condition\": \""+ codition +"\",\n" +
-                    "        \"advice\": \""+ advice +"\",\n" +
+                    "    \"data\":{\n" +
+                    "        \"medrec_id\":" + medrec_id + ",\n" +
+                    "        \"attend_date\":\"" + format_attend_date +"\",\n" +
+                    "        \"patient_name\":\""+ patient_name +"\",\n" +
+                    "        \"doctor_name\":\"" + doctor_name +"\",\n" +
+                    "        \"doctor_mobile\":\"" + doctor_mobile+"\",\n" +
+                    "        \"doctor_email\":\"" + doctor_email +"\",\n" +
+                    "        \"department_name\":\"" + department_name +"\",\n" +
+                    "        \"condition\":\""+ codition +"\",\n" +
+                    "        \"advice\":\""+ advice +"\",\n" +
                     "        \"drug\":[" + drugsData + "]\n" +
                     "    },\n" +
                     "    \"meta\": {\n" +
