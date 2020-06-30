@@ -2,6 +2,7 @@ package com.example.demo.service.reg;
 
 import com.example.demo.mapper.DepartmentMapper;
 import com.example.demo.mapper.DoctorMapper;
+import com.example.demo.mapper.PatientMapper;
 import com.example.demo.mapper.RegMapper;
 import com.example.demo.model.Department;
 import com.example.demo.model.Doctor;
@@ -14,13 +15,15 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
-public class RegServiceImpl implements com.example.demo.reg.RegService {
+public class RegServiceImpl implements com.example.demo.service.reg.RegService {
     @Autowired
     RegMapper regMapper;
     @Autowired
     DepartmentMapper departmentMapper;
     @Autowired
     DoctorMapper doctorMapper;
+    @Autowired
+    PatientMapper patientMapper;
 
     @Override
     public String department_list() {
@@ -59,7 +62,6 @@ public class RegServiceImpl implements com.example.demo.reg.RegService {
     @Override
     public String doctor_list(Long department_id) {
 //        Date date = java.sql.Date.valueOf(params.get("date"));
-        System.out.println(department_id);
         List<Doctor> doctors = doctorMapper.selectByDepartmentId(department_id);
         StringBuilder str = new StringBuilder();
         for (Doctor doctor : doctors) {
@@ -244,6 +246,79 @@ public class RegServiceImpl implements com.example.demo.reg.RegService {
                     "    \"data\": [],\n" +
                     "    \"meta\": {\n" +
                     "        \"msg\": \"挂号失败\",\n" +
+                    "        \"status\": 500\n" +
+                    "    }\n" +
+                    "}";
+        }
+    }
+    @Override
+    public String reg_list(Long patient_id) {
+        List<Reg> regs;
+        int total = regMapper.countByPatientIdWithoutState4(patient_id);
+        if(total==0) {
+            try {
+                return "{\n" +
+                        "    \"data\": [],\n" +
+                        "    \"meta\": {\n" +
+                        "        \"msg\": \"无挂号可查看\",\n" +
+                        "        \"status\": 404\n" +
+                        "    }\n" +
+                        "}";
+            } catch (Exception e) {
+                return "{\n" +
+                        "    \"data\": [],\n" +
+                        "    \"meta\": {\n" +
+                        "        \"msg\": \"获取挂号列表失败\",\n" +
+                        "        \"status\": 500\n" +
+                        "    }\n" +
+                        "}";
+            }
+        }
+        regs = regMapper.selectByPatientIdWithoutState4(patient_id);
+        StringBuilder str = new StringBuilder();
+        String period;
+        SimpleDateFormat date_fmt = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat datetime_fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        for (Reg reg : regs) {
+            str.append("{\"reg_id\":");
+            str.append(reg.getRegId());
+            str.append(",\n\"department_name\":\"");
+            str.append(departmentMapper.selectByPrimaryKey(doctorMapper.selectByPrimaryKey(reg.getDoctorId()).getDepartmentId()).getDepartmentName());
+            str.append("\",\n\"doctor_name\":\"");
+            str.append(doctorMapper.selectByPrimaryKey(reg.getDoctorId()).getDoctorName());
+            str.append("\",\n\"patient_name\":\"");
+            str.append(patientMapper.selectByPrimaryKey(reg.getPatientId()).getPatientName());
+            str.append("\",\n\"reg_time\":\"");
+            str.append(datetime_fmt.format(reg.getRegTime()));
+            str.append("\",\n\"res_date\":\"");
+            str.append(date_fmt.format(reg.getResDate()));
+            str.append("\",\n\"period\":\"");
+            period=reg.getPeriod()?"下午":"上午";
+            str.append(period);
+            str.append("\",\n\"amount\":");
+            str.append(reg.getAmount());
+            str.append(",\n\"serial_num\":");
+            str.append(reg.getSerialNum());
+            str.append(",\n\"state\":");
+            str.append(reg.getState());
+            str.append("},");
+        }
+        str.deleteCharAt(str.length() - 1);
+        try {
+            return "{\n" +
+                    "    \"data\": [\n" +
+                    str +
+                    "    ],\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"获取挂号列表成功\",\n" +
+                    "        \"status\": 200\n" +
+                    "    }\n" +
+                    "}";
+        } catch (Exception e) {
+            return "{\n" +
+                    "    \"data\": [],\n" +
+                    "    \"meta\": {\n" +
+                    "        \"msg\": \"获取挂号列表失败\",\n" +
                     "        \"status\": 500\n" +
                     "    }\n" +
                     "}";

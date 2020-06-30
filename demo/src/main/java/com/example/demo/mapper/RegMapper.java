@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.Date;
+import java.util.List;
 
 public interface RegMapper {
     int deleteByPrimaryKey(Long regId);
@@ -33,4 +34,8 @@ public interface RegMapper {
             "and period=#{period} and state=1 limit 1")
     patientInfo getRegPatientInfo(@Param("doctor_id") Long doctor_id,@Param("res_date") String res_date,
                                   @Param("period") int period);
+
+    List<Reg> selectByPatientIdWithoutState4(Long patientId);
+
+    int countByPatientIdWithoutState4(Long patientId);
 }

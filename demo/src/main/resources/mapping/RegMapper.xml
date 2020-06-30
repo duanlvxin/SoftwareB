@@ -153,4 +153,18 @@
     and period = #{period}
     and serial_num = #{serialNum}
   </select>
+  <select id="selectByPatientIdWithoutState4" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    select
+    <include refid="Base_Column_List" />
+    from reg
+    where patient_id = #{patientId,jdbcType=BIGINT}
+    and state &lt;&gt; 4
+    order by state desc, res_date desc, period
+  </select>
+  <select id="countByPatientIdWithoutState4" resultType="java.lang.Integer" parameterType="java.lang.Long">
+    select count(*)
+    from reg
+    where patient_id = #{patientId,jdbcType=BIGINT}
+    and state &lt;&gt; 4
+  </select>
 </mapper>

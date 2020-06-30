@@ -44,4 +44,9 @@ public class RegController {
     public JSONObject reg_submit(@RequestBody Map<String, String> params) {
         return JSONObject.parseObject(RegService.reg_submit(params));
     }
+
+    @RequestMapping(value = "api/patient/reg-list",method = RequestMethod.GET)
+    public JSONObject reg_list(HttpServletRequest request) {
+        return JSONObject.parseObject(RegService.reg_list(Long.parseLong(request.getParameter("patient_id"))));
+    }
 }
