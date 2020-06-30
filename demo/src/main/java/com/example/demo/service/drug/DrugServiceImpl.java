@@ -43,7 +43,7 @@ public class DrugServiceImpl implements com.example.demo.service.drug.DrugServic
                         "}";
             }
         }
-        if(start>total) {
+        if(start>total-1) {
             try {
                 return "{\n" +
                         "    \"data\": [],\n" +
@@ -63,10 +63,10 @@ public class DrugServiceImpl implements com.example.demo.service.drug.DrugServic
             }
         }
         if(drug_search.length()==0) {
-            drugs = drugMapper.selectByPage(start, page_size);
+            drugs = drugMapper.selectOnPage(start, page_size);
         }
         else {
-            drugs=drugMapper.selectByName(search,start,page_size);
+            drugs=drugMapper.selectByNameOnPage(search,start,page_size);
         }
         StringBuilder str = new StringBuilder();
         for (Drug drug : drugs) {

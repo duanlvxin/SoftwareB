@@ -34,4 +34,12 @@ public interface DoctorMapper {
     Doctor selectByUsername(String doctorUser);
 
     List<Doctor> selectByDepartmentId(Long departmentId);
+
+    int count();
+
+    int countByDepartmentId(Long departmentId);
+
+    List<Doctor> selectOnPage(int start, int addNum);
+
+    List<Doctor> selectByDepartmentIdOnPage(Long departmentId, int start, int addNum);
 }

@@ -103,14 +103,14 @@
       drug_specification = #{drugSpecification,jdbcType=CHAR}
     where drug_id = #{drugId,jdbcType=BIGINT}
   </update>
-  <select id="selectByPage" resultMap="BaseResultMap">
+  <select id="selectOnPage" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from drug
     limit #{start},
     #{page_size}
   </select>
-  <select id="selectByName" resultMap="BaseResultMap">
+  <select id="selectByNameOnPage" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from drug

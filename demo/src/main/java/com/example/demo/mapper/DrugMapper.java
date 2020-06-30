@@ -17,11 +17,11 @@ public interface DrugMapper {
 
     int updateByPrimaryKey(Drug record);
 
-    List<Drug> selectByPage(int start, int page_size);
+    List<Drug> selectOnPage(int start, int page_size);
 
     int count();
 
-    List<Drug> selectByName(String search,int start, int page_size);
+    List<Drug> selectByNameOnPage(String search,int start, int page_size);
 
     int countByName(String search);
 }
