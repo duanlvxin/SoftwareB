@@ -189,10 +189,40 @@
     from doctor
     where department_id = #{departmentId,jdbcType=BIGINT}
   </select>
-  <select id="selectByUsername" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="selectByUsername" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
     select
     <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
     from doctor
     where doctor_user = #{doctorUser,jdbcType=CHAR}
+  </select>
+  <select id="count" resultType="java.lang.Integer">
+    select count(*)
+    from doctor
+  </select>
+  <select id="countByDepartmentId" resultType="java.lang.Integer">
+    select count(*)
+    from doctor
+    where department_id = #{departmentId}
+  </select>
+  <select id="selectOnPage" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from doctor
+    limit #{start},
+    #{addNum}
+  </select>
+  <select id="selectByDepartmentIdOnPage" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from doctor
+    where department_id = #{departmentId}
+    limit #{start},
+    #{addNum}
   </select>
 </mapper>

@@ -10,4 +10,5 @@ public interface RegService {
     String full_doctor_info(Long doctor_id);
     String patient_info(Long doctor_id);
     String reg_submit(Map<String, String> params);
+    String reg_list(Long patient_id);
 }

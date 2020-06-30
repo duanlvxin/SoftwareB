@@ -103,4 +103,28 @@
       drug_specification = #{drugSpecification,jdbcType=CHAR}
     where drug_id = #{drugId,jdbcType=BIGINT}
   </update>
+  <select id="selectOnPage" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from drug
+    limit #{start},
+    #{page_size}
+  </select>
+  <select id="selectByNameOnPage" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from drug
+    where drug_name like #{search}
+    limit #{start},
+    #{page_size}
+  </select>
+  <select id="count" resultType="java.lang.Integer">
+    select count(*)
+    from drug
+  </select>
+  <select id="countByName" resultType="java.lang.Integer">
+    select count(*)
+    from drug
+    where drug_name like #{search}
+  </select>
 </mapper>
