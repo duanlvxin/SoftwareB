@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class QueueServiceImpl implements QueueService {
@@ -14,7 +15,8 @@ public class QueueServiceImpl implements QueueService {
     RegMapper regMapper;
 
     @Override
-    public String patient_late(Long reg_id) {
+    public String patient_late(Map<String,Long> params) {
+        Long reg_id = params.get("reg_id");
         Reg reg = regMapper.selectByPrimaryKey(reg_id);
         if (reg.getState() != 3) {
             try {

@@ -19,8 +19,8 @@ public class QueueController {
     @Autowired
     QueueServiceImpl QueueService = new QueueServiceImpl();
 
-    @RequestMapping(value = "api/doctor/patient-late",method = RequestMethod.GET)
-    public JSONObject reg_list(HttpServletRequest request) {
-        return JSONObject.parseObject(QueueService.patient_late(Long.parseLong(request.getParameter("reg_id"))));
+    @RequestMapping(value="api/doctor/patient-late",method = RequestMethod.POST)
+    public JSONObject patient_late(@RequestBody Map<String,Long> params){
+        return JSONObject.parseObject(QueueService.patient_late(params));
     }
 }
