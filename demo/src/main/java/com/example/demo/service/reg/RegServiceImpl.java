@@ -226,7 +226,7 @@ public class RegServiceImpl implements RegService {
         reg.setResDate(res_date);
         reg.setPeriod(period);
         reg.setAmount((float) 15.00);
-        reg.setState(0);
+        reg.setState(1);
         int reserved = regMapper.countReserved(doctor_id, res_date, period);
         reg.setSerialNum(reserved + 1);
         Long reg_id = 0L;
