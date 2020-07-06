@@ -1,8 +1,7 @@
 package com.example.demo.service.home;
 
-import com.example.demo.mapper.DoctorMapper;
 import com.example.demo.mapper.DepartmentMapper;
-import com.example.demo.model.Department;
+import com.example.demo.mapper.DoctorMapper;
 import com.example.demo.model.Doctor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,15 +19,14 @@ public class HomeServiceImpl implements HomeService {
     @Override
     public String doctor_list(String department_id, int total, int add_num) {
         List<Doctor> doctors;
-        int start=total;
+        int start = total;
         int cnt;
-        if(department_id.length()==0) {
-            cnt=doctorMapper.count();
+        if (department_id.length() == 0) {
+            cnt = doctorMapper.count();
+        } else {
+            cnt = doctorMapper.countByDepartmentId(Long.parseLong(department_id));
         }
-        else {
-            cnt=doctorMapper.countByDepartmentId(Long.parseLong(department_id));
-        }
-        if(cnt==0) {
+        if (cnt == 0) {
             try {
                 return "{\n" +
                         "    \"data\": [],\n" +
@@ -47,7 +45,7 @@ public class HomeServiceImpl implements HomeService {
                         "}";
             }
         }
-        if(start>cnt-1) {
+        if (start > cnt - 1) {
             try {
                 return "{\n" +
                         "    \"data\": [],\n" +
@@ -66,11 +64,10 @@ public class HomeServiceImpl implements HomeService {
                         "}";
             }
         }
-        if(department_id.length()==0) {
+        if (department_id.length() == 0) {
             doctors = doctorMapper.selectOnPage(start, add_num);
-        }
-        else {
-            doctors=doctorMapper.selectByDepartmentIdOnPage(Long.parseLong(department_id),start,add_num);
+        } else {
+            doctors = doctorMapper.selectByDepartmentIdOnPage(Long.parseLong(department_id), start, add_num);
         }
         StringBuilder str = new StringBuilder();
         byte[] doctor_photo;
@@ -83,8 +80,8 @@ public class HomeServiceImpl implements HomeService {
             str.append(doctor.getDoctorName());
             str.append("\",\n\"department_name\":\"");
             str.append(departmentMapper.selectByPrimaryKey(doctor.getDepartmentId()).getDepartmentName());
-            str.append("\",\n\"doctor_info\":\"");
-            str.append(doctor.getDoctorIntro());
+            str.append("\",\n\"doctor_intro\":\"");
+            str.append(doctor.getDoctorIntro() == null ? "无" : doctor.getDoctorIntro());
             str.append("\",\n\"doctor_email\":\"");
             str.append(doctor.getDoctorEmail());
             str.append("\",\n\"doctor_mobile\":\"");
@@ -100,12 +97,12 @@ public class HomeServiceImpl implements HomeService {
             str.append("\",\n\"doctor_photo\":\"");
             str.append(encoded_photo);
             str.append("\",\n\"doctor_gender\":\"");
-            str.append(doctor.getDoctorGender()?"男":"女");
+            str.append(doctor.getDoctorGender() ? "男" : "女");
             str.append("\"},");
         }
         str.deleteCharAt(str.length() - 1);
         total += doctors.size();
-        boolean at_end=cnt==total;
+        boolean at_end = cnt == total;
         try {
             return "{\n" +
                     "    \"data\": {\n" +
