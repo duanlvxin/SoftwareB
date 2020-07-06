@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * 生成Token的工具类
  * @author duan
- * @since 2020-5-25 14:01:41
+ * @since 2020-6-25 14:01:41
  */
 public class TokenTools {
     /**加密秘钥*/

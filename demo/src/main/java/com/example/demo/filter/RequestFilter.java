@@ -9,13 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * @ClassName RequestFilter
- * @Description [拦截器，验证参数签名是否通过]
- * @Author wangdong
- * @Date 2019/10/6 18:42
- * @Version V1.0
- **/
 
 @WebFilter(filterName = "request", urlPatterns =
         {"/api/patient/single-medrec","/api/patient/all-medrec",
