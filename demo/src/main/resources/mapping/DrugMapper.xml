@@ -107,6 +107,7 @@
     select
     <include refid="Base_Column_List" />
     from drug
+    where drug_stock > 0
     limit #{start},
     #{page_size}
   </select>
@@ -115,16 +116,19 @@
     <include refid="Base_Column_List" />
     from drug
     where drug_name like #{search}
+    and drug_stock > 0
     limit #{start},
     #{page_size}
   </select>
   <select id="count" resultType="java.lang.Integer">
     select count(*)
     from drug
+    where drug_stock > 0
   </select>
   <select id="countByName" resultType="java.lang.Integer">
     select count(*)
     from drug
     where drug_name like #{search}
+    and drug_stock > 0
   </select>
 </mapper>
