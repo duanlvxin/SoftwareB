@@ -1,6 +1,8 @@
 package com.example.demo.mapper;
 
 import com.example.demo.model.Drug;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -22,6 +24,9 @@ public interface DrugMapper {
     int count();
 
     List<Drug> selectByNameOnPage(String search,int start, int page_size);
+
+    @Update("update drug set drug_stock=drug_stock-#{drugNum} where drug_id=#{drugId}")
+    void updateDrugStock(@Param("drugId") Long drugId, @Param("drugNum") int drugNum);
 
     int countByName(String search);
 }

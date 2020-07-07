@@ -32,6 +32,9 @@ public class MedrecServiceImpl implements MedrecService {
     @Autowired
     RegMapper regMapper;
 
+    @Autowired
+    DrugMapper drugMapper;
+
     @Override
     public String getAllMedrec(Long patient_id){
         try{
@@ -192,6 +195,7 @@ public class MedrecServiceImpl implements MedrecService {
                 prescribe.setMedrecId(medrec_id);
                 prescribe.setDrugId(drug_id);
                 prescribe.setDrugNum(drug_num);
+                drugMapper.updateDrugStock(drug_id,drug_num);
                 prescribeMapper.insert(prescribe);
             }catch (Exception e){
                 e.printStackTrace();
